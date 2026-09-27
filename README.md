@@ -2,30 +2,30 @@
 
 # Trust Me Bro Benchmark
 
-**Does your provider behave like the model it claims to serve?**
+**Do providers return statistically different answers under the same benchmark?**
 
-Trust Me Bro (`tmb`) compares **two or more API endpoints claiming to serve the same model** and produces reproducible evidence about whether their behavior is consistent. Start with DeepSeek, or point the same model-agnostic engine at any OpenAI-compatible chat API.
+Trust Me Bro (`tmb`) compares **two or more API endpoints claiming to serve the same model** and produces reproducible evidence about differences in their answer distributions on matched prompts. Start with DeepSeek, or point the same model-agnostic engine at any OpenAI-compatible chat API.
 
 No leaderboard. No authenticity percentage. No majority vote that declares a winner.
 
-[Quick start](#quick-start) · [Practical consistency](#measure-practical-consistency) · [Dataset comparison](#compare-a-published-dataset) · [MCP](docs/mcp.md) · [Documentation](docs/README.md)
+[Quick start](#quick-start) · [Statistical comparison](#compare-a-published-dataset) · [Repeat baseline](#inspect-repeat-baseline-disagreement) · [MCP](docs/mcp.md) · [Documentation](docs/README.md)
 
 ## How it works
 
 ```mermaid
 flowchart TD
-    A["Freeze dataset, controls and tolerance"] --> B["Plan budget and collect matched prompts"]
-    B --> C["Reference + repeat, candidates and different-model control"]
+    A["Freeze dataset, controls and statistical plan"] --> B["Plan budget and collect matched prompts"]
+    B --> C["Configured endpoints and optional controls"]
     C --> D["Save parsed answers and explicit failures"]
     D --> E["Distribution differences"]
-    D --> F["Practical baseline tolerance"]
+    D --> F["Descriptive repeat-baseline comparison"]
     D --> G["Accuracy and coverage"]
     E --> H["Reproducible JSON and standalone report"]
     F --> H
     G --> H
 ```
 
-The same engine runs from the CLI or an MCP client. The report explains **what was compared, how large the differences were, and how much uncertainty remains**. It provides behavioral evidence; it cannot inspect remote weights. See [the module diagram](docs/architecture.md#inside-the-repository) and [the verdict decision flow](docs/consistency.md#decision-flow).
+The same engine runs from the CLI or an MCP client. The report explains **what was compared, how large the differences were, and how much uncertainty remains**. It provides behavioral evidence; it cannot inspect remote weights. See [the module diagram](docs/architecture.md#inside-the-repository) and [the statistical outcomes](docs/interpreting-results.md#primary-outcomes).
 
 ## What the result means
 
@@ -34,10 +34,12 @@ An API-only test **cannot conclusively prove which weights a remote provider loa
 | Question | What `tmb` can say |
 |---|---|
 | Which providers behave differently? | **Relative comparison:** all N(N−1)/2 pairs, with samples and evidence. |
-| Does a provider behave like a separately trusted deployment? | **Reference comparison:** consistency with your designated reference under this protocol. |
+| Does a provider differ from a designated reference? | **Reference comparison:** the same corrected distribution test against your chosen endpoint. |
 | Is this definitely the original checkpoint? | **Identity proof:** outside the scope of black-box behavioral testing. |
 
-Distribution-test verdicts are **detectably different**, **no difference detected**, or **inconclusive**. A nonsignificant result is not evidence of equivalence. The optional practical-consistency protocol reports **within baseline tolerance**, **beyond baseline tolerance**, or **inconclusive**, using an independently sampled repeat control and a tolerance fixed before evaluation. Every comparison reports effect size, coverage, uncertainty and limitations. Accuracy, latency and cost never become identity scores.
+The primary question is whether providers' response distributions are statistically distinguishable on the tested prompts. Distribution-test verdicts are **detectably different**, **no difference detected**, or **inconclusive**. A completed valid test above the significance threshold means no difference was detected; a failed or incomplete test is inconclusive. Neither establishes equivalence. Every comparison reports effect size, coverage, uncertainty and limitations. Accuracy, latency and cost never become identity scores.
+
+The optional repeat-baseline view reports disagreement and **descriptive bootstrap intervals only**. Version 0.3 stops issuing tolerance verdicts from that uncalibrated bootstrap. Historical 0.2 tolerance labels remain reproducible with an explicit warning; they are not validated equivalence conclusions.
 
 **The bundled suite is a smoke test.** Its six statistical prompts are too narrow for a comprehensive checkpoint audit. An exact-string test can detect capitalization alone, such as `Biru` versus `biru`, even when both answers mean the same thing. Reports expose each probe's contribution so a narrow formatting signal is visible. See [datasets and stronger audit protocols](docs/datasets.md) before interpreting a live comparison.
 
@@ -56,7 +58,7 @@ tmb report results/demo/run/run.json
 
 Open `results/demo/run/report.md`. The adjacent `run.json` is the machine-readable manifest and evidence bundle. The demo creates 300 synthetic questions and four mock endpoints: a reference, its repeat alias, a same-distribution candidate, and a different-distribution control. These are fixtures, not DeepSeek measurements; their accuracy has no capability meaning.
 
-The demo uses a fixture-specific 12-point tolerance. Real evaluations require their own independently justified margin.
+The demo uses a fixture-specific 12-point descriptive margin. Its bootstrap intervals do not establish tolerance or equivalence.
 
 For a smaller smoke test, run `tmb benchmark --config examples/mock.yaml --level 1 --output results/quick`. That fixture has three endpoints and uses the original constrained-output suite.
 
@@ -69,9 +71,9 @@ tmb report results/full/run.json
 
 Using uv? Run `uv sync --extra dev --extra mcp --extra datasets`, then prefix commands with `uv run`.
 
-## Measure practical consistency
+## Inspect repeat-baseline disagreement
 
-The practical question is whether a provider's answer disagreement is comparable to a repeat deployment of the claimed model, within a justified tolerance. Start from [consistency-providers.yaml](examples/consistency-providers.yaml), with a designated reference, an identically configured repeat alias, a candidate provider and a different-model control.
+An optional descriptive view compares provider disagreement with variation between two independently queried aliases of one endpoint. Start from [consistency-providers.yaml](examples/consistency-providers.yaml), with a designated reference, an identically configured repeat alias, a candidate provider and a different-model control. The primary difference test does not require this view or an equivalence margin.
 
 ```yaml
 consistency:
@@ -87,9 +89,9 @@ sampling:
 
 Here, `0.05` means **five percentage points of excess answer disagreement** relative to the baseline, in either direction. It is an illustrative design choice, not a universal threshold or an authenticity percentage. Justify it using practical requirements and separate pilot questions; do not tune it on final evaluation responses.
 
-Use the dataset commands below after configuring all four endpoints. A **within baseline tolerance** result requires an approximate simultaneous uncertainty interval entirely inside the margin, adequate coverage, matched known conditions, and sensitivity demonstrated against a different-model control. Missing responses widen worst-case bounds instead of automatically destroying this comparison. Excessive failures, weak controls, degenerate bootstrap samples or insufficient data still yield **inconclusive**.
+Use the dataset commands below after configuring all four endpoints. The view reports the interval's position relative to the recorded margin, coverage limitations and different-model control separation. It always labels new results **descriptive only**: percentile bootstrap tail allocation does not establish simultaneous coverage, especially for rare question types. Missing responses widen worst-case bounds. Significance decisions come from the separate categorical MMD permutation test.
 
-This estimates a specific observable: mean answer disagreement. Equal disagreement rates can conceal different distributions, and the question-cluster bootstrap has approximate coverage. Keep the separate categorical MMD test and question-level evidence in view. No majority vote establishes ground truth.
+This estimates a specific observable: mean answer disagreement. Equal disagreement rates can conceal different distributions. Keep the separate categorical MMD test and question-level evidence in view. No majority vote establishes ground truth.
 
 Read [the exact method and departures](docs/consistency.md), [report interpretation](docs/interpreting-results.md), and [configuration](docs/configuration.md).
 
@@ -114,7 +116,7 @@ python -m pip install -e '.[datasets]'
 tmb prepare-dataset --output results/mmlu-140.json --per-category 10 --seed 20260927
 tmb compare-dataset --config providers.local.yaml --dataset results/mmlu-140.json --repeats 2 --workers 2 --output results/mmlu --dry-run
 tmb compare-dataset --config providers.local.yaml --dataset results/mmlu-140.json --repeats 2 --workers 2 --output results/mmlu
-tmb report results/mmlu/run.json
+tmb report results/mmlu/run.json --dataset results/mmlu-140.json
 ```
 
 With 140 questions and two repeats, the plan uses **280 requests per configured endpoint**. Set limits and inspect the dry-run estimate before collection. Dataset download requires the optional `datasets` extra; offline reporting does not. With uv, use `uv sync --extra datasets --extra dev`.
@@ -195,9 +197,11 @@ Each run writes:
 * **`run.json`** — run ID, version, sanitized config, suite hash, settings, UTC timestamps, request statuses, response IDs, hashes, token usage, costs and statistical results.
 * **`report.md`** — standalone report with an N × N matrix for every requested level, pairwise evidence, per-probe observations, response representatives, and a separate reference section at level 4.
 
-Failures never disappear from a pair. Transport failures, HTTP errors, missing credentials, refusals, truncations, empty responses and suspected cached completions have explicit statuses. The original distribution tests retain their strict rule: any missing or invalid required sample makes that test inconclusive. The optional practical-consistency analysis instead propagates missing-answer bounds and applies its predeclared coverage gates. No string collisions or insufficient permutation resolution also yields an inconclusive legacy level-3 result.
+Failures never disappear from a pair. Transport failures, HTTP errors, missing credentials, refusals, truncations, empty responses and suspected cached completions have explicit statuses. The original distribution tests retain their strict rule: any missing or invalid required sample makes that test inconclusive. The optional descriptive baseline view propagates missing-answer bounds and displays coverage limitations; it does not override the statistical verdict. No string collisions or insufficient permutation resolution also yields an inconclusive legacy level-3 result.
 
 Reports retain response hashes by default. They preserve exact equality, permitting offline reproduction of this implementation's JSD and MMD analysis. Use `--store-text` to inspect redacted response wording; this is necessary for semantic disagreement review, and can still expose personal data. Private prompts are never saved automatically. Read the [privacy guidance](docs/privacy.md).
+
+Reports validate the recorded protocol hash and observation slots before analysis. New dataset manifests also bind item metadata to that hash. Supply `tmb report RUN/run.json --dataset FROZEN.json` to verify the saved labels and prompt hashes against the original dataset. Without it, reports explicitly mark original-dataset linkage unverified. Local hashes detect inconsistent edits, not forgery or actual preregistration. Shared API request seeds are rejected for statistical collection; keep `sampling.request_seed: null`. The local `random_seed` still makes scheduling and offline analysis reproducible.
 
 ### Resume a run
 
@@ -207,7 +211,7 @@ tmb benchmark --config providers.local.yaml --level 3 --output results/full-live
 
 Keep the config, suite, level, tool version and `--store-text` policy unchanged. Completed and failed requests are not resent. An interrupted in-flight request becomes `interrupted_unknown`; the server may already have billed it, so resume does not silently resend it. That pair remains inconclusive. Start a new run to recollect a complete protocol.
 
-For dataset runs, repeat the original `compare-dataset` command with `--resume`, preserving dataset, repeats, workers and consistency settings. Version 0.2 can render 0.1 reports without adding retrospective tolerance verdicts; resuming old collections requires their original version.
+For dataset runs, repeat the original `compare-dataset` command with `--resume`, preserving dataset, repeats, workers and optional baseline settings. Version 0.3 can validate and render 0.1/0.2 reports; resuming old collections requires their original version. Historical seeded statistical runs are rendered as inconclusive because their sampling independence is not established.
 
 The manifest is replaced atomically after each request. Brief local file locks receive a bounded replacement retry; this never resends an API request. A lock prevents concurrent writers. After a hard process kill, remove `results/full-live/.run.lock` **only after confirming no runner still uses it**. Budget exhaustion cannot be bypassed by resume; changing the budget requires a new run.
 

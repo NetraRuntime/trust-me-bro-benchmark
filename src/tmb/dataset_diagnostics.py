@@ -2,8 +2,11 @@
 
 from itertools import combinations
 
+from .validation import validate_observations
+
 
 def disagreement_bounds(run):
+    validate_observations(run, dataset=True, require_gold=False)
     repeats = run["protocol"]["repeats"]
     names = [e["name"] for e in run["config"]["endpoints"]]
     samples = {(name, item["id"]): [] for name in names for item in run["items"]}

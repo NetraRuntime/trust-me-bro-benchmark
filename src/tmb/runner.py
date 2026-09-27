@@ -15,9 +15,12 @@ from . import __version__
 from .adapters import MockAdapter, OpenAIAdapter, now, payload, redact
 from .analysis import analyze
 from .probes import SUITE_VERSION, digest
+from .validation import require_unseeded, validate_manifest
 
 
 def plan(config, probes, level):
+    if level >= 3:
+        require_unseeded(config)
     rng = random.Random(config.sampling.random_seed)
     jobs = []
     for lev in range(min(level, 3) + 1):
@@ -130,6 +133,7 @@ def _benchmark(config, probes, suite_hash, level, output, resume, store_text, cl
             raise ValueError(
                 "Resume protocol changed: config, suite, level, version and text policy must match"
             )
+        validate_manifest(run, finalized=False)
         if run.get("stop_reason", "").startswith("reported usage"):
             raise ValueError("Usage exceeded reservation; inspect the run and start a new budgeted protocol")
         for row in run["requests"]:
@@ -272,5 +276,6 @@ def _benchmark(config, probes, suite_hash, level, output, resume, store_text, cl
             else None
         )
         run["analysis"] = analyze(run)
+        run["validation"] = validate_manifest(run, finalized=False)
         atomic_json(path, redact(run, secrets))
     return run

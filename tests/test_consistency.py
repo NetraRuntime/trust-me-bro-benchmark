@@ -5,6 +5,7 @@ import pytest
 
 from tmb.config import Config
 from tmb.consistency import analyze_consistency, render_consistency
+from tmb.validation import CONSISTENCY_METHOD
 
 
 def fixture(seed=13, questions=300, margin=0.12):
@@ -103,6 +104,32 @@ def test_duplicate_observation_rejected():
     run["requests"].append(run["requests"][0])
     with pytest.raises(ValueError, match="Duplicate"):
         analyze_consistency(run)
+
+
+def test_rare_question_bootstrap_cannot_issue_new_tolerance_verdict():
+    run = fixture(questions=100, margin=0.05)
+    names = ["reference", "repeat", "c1", "c2", "c3", "different"]
+    run["config"]["endpoints"] = [
+        {"name": name, "role": "different_model_control" if name == "different" else "candidate"}
+        for name in names
+    ]
+    run["protocol"]["bootstrap"] = 12000
+    run["items"] = [{"id": str(q), "category": "fixture", "option_count": 2} for q in range(100)]
+    run["requests"] = [
+        {"endpoint": name, "question_id": str(q), "repeat": repeat, "status": "ok",
+         "choice": "B" if q < {"c1": 1, "c2": 6, "c3": 9, "different": 70}.get(name, 0) else "A"}
+        for q in range(100) for name in names for repeat in range(2)
+    ]
+    historical = analyze_consistency(run)
+    assert pair(historical, "reference", "c1")["verdict"] == "within baseline tolerance"
+    assert "Historical v0.2" in render_consistency(historical)
+    run["protocol"]["consistency"]["method"] = CONSISTENCY_METHOD
+    result = analyze_consistency(run)
+    candidate = pair(result, "reference", "c1")
+    assert candidate["descriptive_bootstrap_interval"] == [0, 0.05]
+    assert candidate["interval_position"] == "inside margin"
+    assert all(p["verdict"] == "descriptive only" for p in result["pairs"])
+    assert "sensitivity_demonstrated" not in result
 
 
 def test_different_model_provenance_is_expected_but_candidate_mismatch_is_not():

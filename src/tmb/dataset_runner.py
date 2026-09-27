@@ -16,9 +16,11 @@ from .choice_analysis import analyze_choices
 from .datasets import PARSER, parse_choice, question_prompt
 from .probes import Probe, digest
 from .runner import atomic_json, estimate, run_lock
+from .validation import CONSISTENCY_METHOD, dataset_items, require_unseeded, validate_manifest
 
 
 def dataset_plan(config, package, repeats, seed):
+    require_unseeded(config)
     rng = random.Random(seed)
     jobs = []
     for repeat in range(repeats):
@@ -63,6 +65,7 @@ def compare_dataset(
 ):
     if repeats not in (2, 3, 4) or not 1 <= workers <= len(config.endpoints):
         raise ValueError("Use 2-4 repeats and workers between 1 and the endpoint count")
+    require_unseeded(config)
     if config.probes_file:
         raise ValueError("Dataset comparison uses --dataset, not probes_file")
     endpoints = {e.name: e for e in config.endpoints}
@@ -76,7 +79,9 @@ def compare_dataset(
         left, right = [endpoints[n].model_dump(exclude={"name", "prices"}) for n in same_pair]
         if left != right:
             raise ValueError("Same-configuration controls must have identical endpoint settings")
+    items = dataset_items(package)
     protocol = {
+        "items_hash": digest(items),
         "repeats": repeats,
         "workers": workers,
         "seed": config.sampling.random_seed,
@@ -90,7 +95,7 @@ def compare_dataset(
     }
     if config.consistency:
         protocol["consistency"] = config.consistency.model_dump(mode="json") | {
-            "method": "paired-disagreement-bootstrap-v1",
+            "method": CONSISTENCY_METHOD,
         }
     secrets = [os.environ.get(e.api_key_env, "") for e in config.endpoints if e.api_key_env]
     safe_config = redact(config.model_dump(mode="json"), secrets)
@@ -120,6 +125,7 @@ def compare_dataset(
             run = json.loads(path.read_text(encoding="utf8"))
             if run["protocol_hash"] != fingerprint:
                 raise ValueError("Resume protocol differs from the recorded dataset/config/settings")
+            validate_manifest(run, package, finalized=False)
             if run.get("stop_reason", "").startswith("reported usage"):
                 raise ValueError("Usage exceeded reservation; start a new reviewed budget")
             for row in run["requests"]:
@@ -130,7 +136,7 @@ def compare_dataset(
         else:
             run = {
                 "kind": "choice-dataset",
-                "schema_version": 1,
+                "schema_version": 2,
                 "tool_version": __version__,
                 "run_id": str(uuid.uuid4()),
                 "started_at": now(),
@@ -139,11 +145,7 @@ def compare_dataset(
                 "protocol_hash": fingerprint,
                 "dataset": {k: v for k, v in package.items() if k != "items"},
                 "store_text": store_text,
-                "items": [
-                    {k: v for k, v in i.items() if k not in ("question", "options")}
-                    | {"option_count": len(i["options"]), "prompt_hash": digest(question_prompt(i))}
-                    for i in package["items"]
-                ],
+                "items": items,
                 "planned": planned,
                 "requests": [],
             }
@@ -255,5 +257,6 @@ def compare_dataset(
                 else None
             )
             run["analysis"] = analyze_choices(run)
+            run["validation"] = validate_manifest(run, package, finalized=False)
             atomic_json(path, redact(run, secrets))
         return run

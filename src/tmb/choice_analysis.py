@@ -7,6 +7,7 @@ import numpy as np
 
 from .report import cell
 from .statistics import holm, mmd2
+from .validation import sampling_issue, validate_observations
 
 LIMIT = (
     "Parsed-choice behavior only, not weight identity. Public dataset contamination and selective routing are possible. "
@@ -50,6 +51,7 @@ def categorical_test(groups, categories, permutations, bootstrap, seed):
 
 
 def analyze_choices(run):
+    validate_observations(run, dataset=True)
     items = run["items"]
     endpoints = run["config"]["endpoints"]
     names = [e["name"] for e in endpoints]
@@ -185,6 +187,9 @@ def analyze_choices(run):
             if len(pairs) / (protocol["permutations"] + 1) > protocol["alpha"]:
                 pair["verdict"] = "inconclusive"
                 pair["reason"] = "Insufficient permutation resolution for the planned family"
+        if sampling_issue(run):
+            pair["verdict"] = "inconclusive"
+            pair["reason"] = sampling_issue(run)
     result = {
         "scores": scores,
         "pairs": pairs,
@@ -216,6 +221,8 @@ def render_choices(run):
         f"Run: {run['run_id']}. Window: {run['started_at']} to {run['updated_at']}.",
         "",
         f"Dataset revision: {run['dataset']['revision']}; subset hash: {run['dataset']['content_hash']}.",
+        "",
+        "Evidence validation: " + cell(run.get("validation", "Not checked by this renderer.")),
         "",
         (
             f"Questions: {len(run['items'])}; subjects: {len({i['category'] for i in run['items']})}. "
@@ -291,8 +298,8 @@ def render_choices(run):
         )
     lines += [
         "",
-        "| Pair | Kind | Samples | MMD squared | Adjusted p | Descriptive 95% MMD interval | Answer disagreement | Accuracy gap (left minus right) |",
-        "|---|---|---|---:|---:|---|---:|---:|",
+        "| Pair | Kind | Samples | MMD squared | Adjusted p | Descriptive 95% MMD interval | Answer disagreement | Accuracy gap (left minus right) | Inference limitation |",
+        "|---|---|---|---:|---:|---|---:|---:|---|",
     ]
     for p in analysis["pairs"]:
         lines.append(
@@ -308,6 +315,7 @@ def render_choices(run):
                     p.get("descriptive_interval_95"),
                     p.get("mean_cross_sample_disagreement"),
                     p.get("accuracy_difference_left_minus_right"),
+                    p.get("reason", ""),
                 ]
             )
             + " |"
@@ -368,18 +376,29 @@ def render_choices(run):
         ),
         "",
     ]
+    failures = {}
+    for row in run["requests"]:
+        if row["status"] != "ok":
+            failures.setdefault((row["endpoint"], row["question_id"]), Counter())[row["status"]] += 1
     for p in analysis["pairs"]:
         lines += [
             f"<details><summary>{cell(p['left'])} / {cell(p['right'])}</summary>",
             "",
-            "| Question | Subject | Gold | Left choices | Right choices |",
-            "|---|---|---|---|---|",
+            "| Question | Subject | Gold | Left choices | Right choices | Valid / planned (left, right) | Failure statuses (left, right) |",
+            "|---|---|---|---|---|---|---|",
         ]
         for o in p["observations"]:
-            if o["disagreement"] != 0:
+            counts = [sum(o[side].values()) for side in ("left", "right")]
+            repeats = run["protocol"]["repeats"]
+            if o["disagreement"] != 0 or any(count != repeats for count in counts):
+                statuses = [
+                    dict(failures.get((p[side], o["id"]), {}))
+                    for side in ("left", "right")
+                ]
                 lines.append(
                     "| "
                     + " | ".join(cell(o[k]) for k in ("id", "category", "correct_answer", "left", "right"))
+                    + f" | {counts[0]}/{repeats}, {counts[1]}/{repeats} | {cell(statuses)}"
                     + " |"
                 )
         lines += ["", "</details>", ""]
@@ -387,7 +406,7 @@ def render_choices(run):
         "## Reproduce",
         "",
         (
-            "`tmb report PATH/run.json` recomputes this analysis offline from parsed choices. "
+            "`tmb report PATH/run.json --dataset FROZEN.json` validates the original dataset linkage and recomputes this analysis offline from parsed choices. "
             "The frozen dataset file is needed to recollect prompts. Parsing is versioned; raw text is optional. "
             "See docs/dataset-protocol.md for departures from published methods and interpretation."
         ),

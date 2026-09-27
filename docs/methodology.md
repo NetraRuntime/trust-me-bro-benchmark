@@ -1,6 +1,6 @@
 # Methodology: protocol v0.1
 
-This page describes the legacy cumulative smoke-test suite. For substantive dataset comparisons, use the [parsed-choice protocol](dataset-protocol.md) and optional [practical consistency protocol](consistency.md). Practical tolerance evidence is separate from non-rejection of a distribution test.
+This page describes the legacy cumulative smoke-test suite. For substantive dataset comparisons, use the [parsed-choice protocol](dataset-protocol.md) and optional [descriptive baseline view](consistency.md). The baseline bootstrap does not issue new tolerance verdicts; significance comes from the distribution test.
 
 ## Estimand and observations
 

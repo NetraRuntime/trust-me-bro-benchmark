@@ -67,7 +67,8 @@ Concurrency is bounded by `--workers`. Every question is collected for the prede
 | `statistics.py`, `analysis.py` | Legacy JSD/MMD estimates, permutation tests and corrections |
 | `choice_analysis.py` | Parsed-choice distribution tests, task scores and dataset report rendering |
 | `dataset_diagnostics.py` | Descriptive missing-answer agreement bounds |
-| `consistency.py` | Paired baseline contrasts, missingness propagation, approximate bootstrap intervals and decision gates |
+| `consistency.py` | Descriptive paired baseline contrasts, missingness propagation and bootstrap diagnostics; historical tolerance replay |
+| `validation.py` | Shared manifest/protocol validation, unique observation slots, dataset linkage and independent-sampling safeguards |
 | `service.py`, `mcp_server.py` | Workspace-scoped service and optional official-SDK stdio interface |
 | `demo.py` | Public deterministic synthetic fixtures; no live measurements |
 

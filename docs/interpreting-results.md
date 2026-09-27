@@ -1,41 +1,41 @@
 # Reading a benchmark report
 
-Read the protocol and coverage before the verdict. A comparison with different requested reasoning modes or a large number of failed responses does not isolate a checkpoint difference.
+Read the statistical verdict, protocol and coverage together. The primary question is whether providers' response distributions differ on the tested prompts under the requested settings.
 
-## Three different questions
+## Primary outcomes
 
-**Accuracy** measures correct choices against dataset labels. Two models can have the same accuracy while making entirely different mistakes. The report includes observed correct/planned, valid coverage, question-cluster uncertainty and best/worst accuracy bounds for unavailable answers.
-
-**Distribution testing** asks whether the parsed-choice distributions differ under the tested prompts. The categorical MMD statistic accounts for within-endpoint variation; its permutation p-value is Holm-adjusted across all planned pairs. A negative unbiased MMD estimate is allowed. A nonsignificant p-value means no difference was detected at this sample size and sensitivity, not that the models are equal. The original complete-protocol test remains inconclusive when any required response is unusable.
-
-**Practical consistency** asks whether mean answer disagreement is close enough to a concurrent same-configuration repeat baseline. Its approximate interval includes baseline uncertainty, question variation, multiplicity allocation and worst-case missing-answer bounds. This optional analysis must be declared before collection. It is an observable-specific tolerance assessment, not a replacement for the distribution test.
-
-## Worked example (illustrative, not a provider measurement)
-
-Suppose a repeat baseline disagrees on 8% of cross-response comparisons. A candidate pair disagrees on 10%, giving **+2 percentage points** of excess disagreement. The prespecified tolerance is ±5 points.
-
-| Approximate simultaneous interval for excess | Interpretation |
+| Outcome | Meaning |
 |---|---|
-| [−1, +4] points | Within tolerance, if coverage/comparability gates pass and the different-model control demonstrates sensitivity. |
-| [+7, +12] points | Beyond tolerance: the pair disagrees more than the repeat baseline by a practically meaningful amount. |
-| [−12, −7] points | Beyond tolerance: the pair disagrees substantially less; a change in stochastic behavior also matters. |
-| [+2, +8] points | Inconclusive: it crosses the tolerance boundary. |
-| [−20, +20] points | Inconclusive: little precision, even though zero is included. |
+| **detectably different** | A valid completed categorical MMD permutation test has Holm-adjusted p at or below the recorded alpha. The tested answer distributions are statistically distinguishable under the sampling assumptions. |
+| **no difference detected** | A valid completed test has adjusted p above alpha. It did not detect a difference at this sample size and sensitivity; this does not establish equality. |
+| **inconclusive** | The required test could not support a verdict: for example, missing answers, insufficient permutation resolution or seeded sample coupling. This is not a nonsignificant completed test. |
 
-The distribution test can detect a small difference while practical consistency remains within tolerance; they test different claims. Conversely, two distinct distributions can have the same disagreement rate. Inspect the per-question tables, including different wrong answers, to understand the result.
+A small statistically detectable difference can have little practical importance. Read MMD effect size, question-level differences and coverage as well as the p-value. Serving configuration, hidden instructions, precision and routing can affect answers; the test does not isolate weights as the cause.
 
-## Missing answers and uncertainty
+The correction family contains every planned pair, including untestable pairs as p=1. Repeated studies need a separate cross-run multiplicity plan. A designated reference is simply an endpoint selected by the investigator; no majority vote establishes truth.
 
-An agreement range such as 90–92% can be a **finite-sample missing-answer bound**: it allows unavailable answers to agree or disagree in every possible way. It is not a population confidence interval. The practical-consistency section separately labels its approximate simultaneous bootstrap interval. The number of n² cross-response comparisons is not the independent sample size; the inference resamples whole questions.
+## Accuracy and disagreement
 
-A completed run can contain truncations, refusals, network errors, invalid formatting or suspected cache hits. Check the status counts. Missing usage is unknown spend, not free requests. A parser failure can reflect formatting rather than a wrong substantive answer; it still cannot silently become a successful observation.
+Accuracy is correct choices divided by planned responses. Missing answers receive no credit, while worst/best accuracy bounds show what unknown answers could change. A formatting failure is not automatically a substantive knowledge error. Accuracy intervals resample whole questions within subjects, retaining repeats; they are pointwise and do not establish a simultaneous provider ranking.
 
-## What to say
+An agreement range such as 90–92% can be a finite-sample missing-answer bound: unavailable cross-response comparisons are allowed to agree or disagree. It is not a population confidence interval. The n² cross-response comparisons are not n² independent observations. Two providers can have equal accuracy while choosing different wrong answers.
 
-Use: “Within the predeclared baseline tolerance for mean answer disagreement on this dataset, with the reported approximate uncertainty and control sensitivity.” Name the baseline, margin, dataset, sample size and limitations.
+Detailed tables include every disagreement and every question missing a planned response, including cases where the surviving choices agree. Valid/planned counts and failure statuses help explain inconclusive pairs.
 
-Use: “Detectably different under this parsed-choice distribution test,” or “No difference detected at the tested sensitivity.” Serving configuration, precision, revision, instructions, caching and provider drift can all affect the result.
+## Optional repeat-baseline view
 
-Avoid “verified authentic,” “95% real,” “same weights,” or interpreting the largest cluster as truth. A remote reference remains designated by the investigator. One different-model control supports discrimination against that model under this setup, not against all possible substitutions.
+Version 0.3 reports excess disagreement and descriptive bootstrap intervals relative to a repeat baseline. An interval inside a recorded margin is a descriptive observation, not an equivalence/tolerance verdict. The bootstrap lacks calibrated simultaneous coverage, and control separation alone does not repair that limitation. Use the primary MMD test for significance.
 
-If results are inconclusive, a **new preplanned study** can use more independent questions, more repeats, better matched controls or adequate output limits. Keep its result distinct from earlier runs. Do not delete difficult questions, relabel prose after seeing answers, increase the tolerance until the provider passes, or retry only failed observations and treat the replacement set as the original experiment.
+Historical version 0.2 within/beyond-tolerance labels are displayed with an explicit calibration warning for traceability. They must not be used as validated equivalence conclusions. See the [baseline method](consistency.md).
+
+## Evidence validation
+
+Reports reject inconsistent protocol hashes, conflicting configuration, duplicate/out-of-range observation slots, invalid successful choices and stale final status totals. New dataset runs bind saved item metadata into the protocol fingerprint. To check original dataset linkage, use `tmb report RUN/run.json --dataset FROZEN.json`, or pass `dataset_path` to MCP `read_report`. Without it, linkage is explicitly unverified. Local hashes detect inconsistent edits; they do not prove actual API delivery or externally timestamped preregistration.
+
+## Reporting a conclusion
+
+Use: “Detectably different under this parsed-choice distribution test,” or “No difference detected on these prompts at the tested sample size.” Include the effect, adjusted p-value, alpha, planned comparison family and valid/planned sample counts.
+
+For failed tests, say: “Inconclusive because required observations were unavailable,” naming the failures. Do not replace it with “not significantly different.” Avoid converting non-rejection into an identity or equivalence claim.
+
+If coverage or power is inadequate, design a new study with independent pilot questions, a justified sample size, suitable controls, adequate output limits and a prespecified failure policy. Do not silently drop difficult questions, change parsers after seeing answers or retry only failures and present the replacements as the original experiment.

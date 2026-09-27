@@ -11,12 +11,14 @@ import numpy as np
 
 from .choice_analysis import cluster_indices
 from .report import cell
+from .validation import CONSISTENCY_METHOD, sampling_issue, validate_observations
 
 
 def analyze_consistency(run):
+    validate_observations(run, dataset=True, require_gold=False)
     protocol = run["protocol"]
     spec = protocol["consistency"]
-    if spec["method"] != "paired-disagreement-bootstrap-v1":
+    if spec["method"] not in {"paired-disagreement-bootstrap-v1", CONSISTENCY_METHOD}:
         raise ValueError("Unsupported consistency method")
     names = [e["name"] for e in run["config"]["endpoints"]]
     endpoints = {e["name"]: e for e in run["config"]["endpoints"]}
@@ -61,6 +63,8 @@ def analyze_consistency(run):
         lower_draws, upper_draws = lower[draws].mean(axis=1), upper[draws].mean(axis=1)
         interval = [float(np.quantile(lower_draws, tail)), float(np.quantile(upper_draws, 1 - tail))]
         reasons = []
+        if sampling_issue(run):
+            reasons.append(sampling_issue(run))
         if run.get("remaining_requests", 0) or any(r["status"] == "in_flight" for r in run["requests"]):
             reasons.append("Collection is incomplete")
         involved = set(baseline) | {left, right}
@@ -130,7 +134,7 @@ def analyze_consistency(run):
         if pair["verdict"] == "within baseline tolerance" and not sensitivity:
             pair["verdict"] = "inconclusive"
             pair["reasons"].append("Different-model control did not demonstrate sensitivity")
-    return {
+    result = {
         "method": spec["method"],
         "baseline": list(baseline),
         "baseline_disagreement_bounds": base.mean(axis=0).tolist(),
@@ -144,26 +148,50 @@ def analyze_consistency(run):
         "Equal disagreement rates can hide different answer distributions. Public probes, unknown controls, "
         "question dependence, drift and shared upstreams limit attribution. A tolerance result is not model identity or probability of authenticity.",
     }
+    if spec["method"] == CONSISTENCY_METHOD:
+        result["control_separation_observed"] = result.pop("sensitivity_demonstrated")
+        result["limitations"] = (
+            "Descriptive baseline comparison only. Percentile bootstrap intervals, including Bonferroni tail allocation, "
+            "do not have established simultaneous coverage and cannot justify tolerance/equivalence verdicts. "
+            "Use the separate categorical MMD permutation test for statistical differences. "
+            "Equal mean disagreement can hide different distributions. Independence and provider controls remain unverified."
+        )
+        for pair in result["pairs"]:
+            interval = pair.pop("approximate_simultaneous_interval")
+            pair["descriptive_bootstrap_interval"] = interval
+            pair["interval_position"] = (
+                "inside margin" if interval[0] >= -spec["margin"] and interval[1] <= spec["margin"]
+                else "above margin" if interval[0] > spec["margin"]
+                else "below margin" if interval[1] < -spec["margin"]
+                else "crosses margin"
+            )
+            pair["verdict"] = "descriptive only"
+    return result
 
 
 def render_consistency(result):
+    descriptive = result["method"] == CONSISTENCY_METHOD
     lines = [
         "",
-        "## Practical consistency against repeat baseline",
+        "## Descriptive comparison against repeat baseline",
+        "",
+        "No calibrated tolerance/equivalence verdict. Use the separate distribution test for significance."
+        if descriptive else
+        "Historical v0.2 tolerance labels are reproduced below for traceability only; their bootstrap calibration is unestablished. Do not treat them as validated equivalence conclusions.",
         "",
         (
             f"Method: {result['method']}. Baseline: {cell(result['baseline'])}. "
-            f"Predeclared excess-disagreement margin: ±{result['margin']:.1%}."
+            f"Recorded excess-disagreement margin: ±{result['margin']:.1%}."
         ),
         "",
         (
             f"{result['correction']}; family alpha={result['family_alpha']}. "
-            f"Different-model sensitivity demonstrated: {result['sensitivity_demonstrated']}."
+            f"Different-model control separation observed: {result.get('control_separation_observed', result.get('sensitivity_demonstrated'))}."
         ),
         "",
-        "Intervals incorporate worst-case missing answers and sampling uncertainty; bootstrap coverage is approximate.",
+        "Intervals incorporate worst-case missing answers and descriptive question resampling; simultaneous coverage is not established.",
         "",
-        "| Pair | Verdict | Excess disagreement bounds | Approximate simultaneous interval | Valid samples | Reasons |",
+        "| Pair | Result | Excess disagreement bounds | Descriptive bootstrap interval | Valid samples | Limitations/gates |",
         "|---|---|---|---|---|---|",
     ]
     for p in result["pairs"]:
@@ -175,7 +203,7 @@ def render_consistency(result):
                     f"{p['left']} / {p['right']}",
                     p["verdict"],
                     p["excess_disagreement_bounds"],
-                    p["approximate_simultaneous_interval"],
+                    p.get("descriptive_bootstrap_interval", p.get("approximate_simultaneous_interval")),
                     p["valid_samples"],
                     p["reasons"],
                 )

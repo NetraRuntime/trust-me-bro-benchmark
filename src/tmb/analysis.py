@@ -4,6 +4,7 @@ from collections import Counter
 from itertools import combinations
 
 from .statistics import holm, jsd, mmd2, permutation_test
+from .validation import sampling_issue, validate_observations
 
 LIMITATIONS = (
     "Behavioral evidence only; no identity proof. No difference detected is not equivalence. "
@@ -14,6 +15,7 @@ LIMITATIONS = (
 
 
 def analyze(run):
+    validate_observations(run, dataset=False)
     cfg = run["config"]
     names = [e["name"] for e in cfg["endpoints"]]
     settings = cfg["sampling"]
@@ -167,6 +169,8 @@ def analyze(run):
                         p["verdict"] = (
                             "detectably different" if adj <= settings["alpha"] else "no difference detected"
                         )
+                if sampling_issue(run):
+                    p.update(verdict="inconclusive", reason=sampling_issue(run))
         levels[str(level)] = {"pairs": pairs, "matrix": matrix(names, pairs)}
     reference = run.get("reference_designation", {}).get("endpoint") or cfg.get("reference")
     if run["level"] == 4:

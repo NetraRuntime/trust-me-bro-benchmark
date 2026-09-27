@@ -30,6 +30,8 @@ def render(run):
         "",
         f"Request status counts: {cell(run['request_counts'])}. Remaining: {run['remaining_requests']}.",
         "",
+        "Evidence validation: " + cell(run.get("validation", "Not checked by this renderer.")),
+        "",
         f"Token usage: {cell(run['usage'])}. Reserved estimated cost USD: {run['reserved_cost_usd']}.",
         "",
         f"Estimated cost from reported tokens USD: {run.get('estimated_reported_cost_usd')} (unknown if usage/prices missing).",

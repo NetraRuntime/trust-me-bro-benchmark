@@ -10,7 +10,7 @@ Add these optional sections to any example. If overriding either map, supply all
 sampling:
   temperature: 1.0
   top_p: 1.0
-  request_seed: null  # Omitted by default; otherwise increments for each repeat.
+  request_seed: null  # Required for statistical collection; local random_seed is separate.
   random_seed: 2026   # Local order, permutation and bootstrap reproducibility.
   repeats: {0: 1, 1: 8, 2: 2, 3: 20}
   max_tokens: {0: 16, 1: 16, 2: 128, 3: 128}
@@ -26,6 +26,8 @@ limits:
 ```
 
 For each request, the input reservation is the prompt's UTF-8 byte length plus a 64-token framing allowance. Add the requested output cap. This is a budgeting heuristic, not an exact tokenizer or bound on hidden/reasoning tokens. `--dry-run` gives the planned total; it does not contact providers. Limits apply across endpoints and all cumulative levels. A limit can stop mid-block, leaving comparisons incomplete. Set limits large enough for the entire planned protocol when complete comparisons are required.
+
+`compare-dataset` and legacy levels 3–4 reject non-null `request_seed` before dispatch, including dry runs and MCP planning. Reusing one seed across reference aliases can couple their responses and violate the independent-sampling design. Levels 0–2 may still record seeded descriptive observations. Scheduling, permutations and bootstraps remain reproducible through `random_seed`. Historical seeded statistical observations are descriptive only and receive inconclusive inference labels.
 
 Prices are optional endpoint fields in USD per million tokens:
 
@@ -82,12 +84,16 @@ Set `probes_file: probes.local.yaml`. The file replaces the bundled suite and mu
 
 ## CLI and schema
 
-Dataset practical consistency adds an optional top-level `consistency` object. `baseline` names two identical candidate configurations; `margin` is required and has no universal default. Defaults are `min_questions: 100`, `min_per_subject: 5`, and `max_missing_fraction: 0.05`. A different-model control is required. Bootstrap draws must provide at least 20 expected observations per multiplicity-adjusted tail; up to 100,000 draws are accepted. Larger families may need more draws. See [the complete protocol](consistency.md) and [example YAML](../examples/consistency-providers.yaml). This option is supported only by `compare-dataset`, not the legacy `benchmark` command.
+The descriptive dataset baseline view adds an optional top-level `consistency` object. `baseline` names two identical candidate configurations; `margin` is required and has no universal default. Defaults are `min_questions: 100`, `min_per_subject: 5`, and `max_missing_fraction: 0.05`. A different-model control is required. Bootstrap draws must provide at least 20 expected observations per multiplicity-adjusted tail; up to 100,000 draws are accepted. Larger families may need more draws. See [the complete protocol](consistency.md) and [example YAML](../examples/consistency-providers.yaml). This option is supported only by `compare-dataset`, not the legacy `benchmark` command.
 
 `tmb demo --output results/demo` creates a complete synthetic dataset comparison without network calls. `--prepare-only` writes fixtures for use with MCP or a later `compare-dataset` command. The output directory must be empty.
 
 `tmb --help`, `tmb benchmark --help`, and `tmb report --help` describe all switches. Exit codes: 0 for a successfully generated complete-request report, 1 for a benchmark with failed/unfinished requests, 2 for configuration/file errors, 130 for interruption. A statistically inconclusive comparison can still have exit code 0. Offline `report` returns 0 after successful rendering, even for an incomplete original run.
 
-`run.json` uses `schema_version: 1`, records the tool version and includes config, suite identity, public prompt metadata, planned reservations, request rows, aggregates, and analysis. The saved per-request hashes are the statistical input. `tmb report` recomputes analysis from those rows without contacting providers or rewriting the evidence file. Use the recorded tool version and committed `uv.lock` to reproduce an analysis environment. Timestamps/IDs differ between newly collected runs; rendering an unchanged manifest is deterministic.
+New dataset `run.json` files use `schema_version: 2` and include `protocol.items_hash`, binding saved item IDs, categories, labels, option counts and prompt hashes to the collection fingerprint. Legacy smoke runs retain schema 1. `tmb report` validates protocol/config agreement, the fingerprint, unique planned observation slots, answer validity and status totals before analysis, without contacting providers or rewriting the evidence file. CLI and MCP use the same validator.
+
+Use `tmb report RUN/run.json --dataset FROZEN.json`, or MCP `read_report` with `dataset_path`, to check item metadata against the original frozen dataset. Without that file the report explicitly marks original-dataset linkage unverified, even if the local metadata hash is consistent. Local hashes are not signatures or evidence of an independent timestamp. Versions 0.1 and 0.2 remain readable; their absence of a protocol-bound item hash makes supplying the original dataset especially important. A report cannot overwrite its input manifest.
+
+Use the recorded tool version and committed `uv.lock` to reproduce an analysis environment. Timestamps/IDs differ between newly collected runs; rendering an unchanged manifest with the same validation inputs is deterministic.
 
 To designate a reference after collection, use `tmb report results/full/run.json --reference ENDPOINT_NAME`. This requires level-3 samples and writes separate `reference-report.md` and `reference-report.json` files. The original manifest/config, pairwise tests and correction family are preserved; the derived artifact records the source hash and designation time. It does not recollect or select observations. Use an unused `--output another-name.md` to create another audit. A known different-model control cannot be the reference and never receives a checkpoint-consistency verdict.

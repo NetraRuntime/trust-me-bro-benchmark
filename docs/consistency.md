@@ -1,19 +1,12 @@
-# Practical behavioral consistency
+# Descriptive repeat-baseline comparison
 
-The practical question is whether a provider's answer disagreement is comparable to a repeat deployment of the claimed model, within a tolerance chosen before collecting evaluation responses. This protocol adds evidence for that question; it does not estimate the probability that a model is authentic.
+The primary benchmark asks whether providers have statistically distinguishable response distributions. The categorical MMD permutation test, with Holm correction, answers that question. It does not require an equivalence margin or a trusted original-weights deployment.
 
-## Design the run
+The optional `consistency` configuration adds a descriptive comparison with repeat variability. **New runs always report this view as descriptive only.** A percentile bootstrap interval is not a calibrated equivalence test, even with Bonferroni tail allocation. Version 0.3 therefore stops producing within/beyond-tolerance verdicts from this method.
 
-Use four or more logical endpoints:
+## Configure the optional view
 
-1. A designated reference, selected by the investigator.
-2. A second independently queried alias of exactly the same endpoint configuration. This is the **repeat baseline**. It measures stochastic variability, not differences between all legitimate deployments.
-3. One or more candidate providers.
-4. A deliberately different model. This checks whether the protocol can distinguish at least that control under these conditions.
-
-The baseline aliases must match in every setting except name and prices, including credential environment name, pinned route, model and reasoning controls. Shared infrastructure, caching, batching and temporal correlation can still violate independence. A remote reference is a designation, not certification.
-
-Choose the dataset, parser, repeats, tolerance, minimum question count, missing-answer limit, and bootstrap count **before evaluation collection**. Use separate pilot questions to select these settings. Do not adjust the tolerance until a preferred provider passes. Do not repurpose old evaluation responses as a fresh confirmatory run. The tool freezes settings in the resumable manifest; it cannot establish that an investigator never saw a public question before.
+Use two independently queried aliases of exactly the same endpoint settings as the baseline, candidate endpoints, and a different-model control. Baseline aliases must match except for name and prices. Shared infrastructure, caching and temporal correlation remain limitations. Statistical collection requires `sampling.request_seed: null`; common API seeds can couple the aliases. The separate local `random_seed` controls reproducible scheduling and analysis.
 
 ```yaml
 consistency:
@@ -23,102 +16,48 @@ consistency:
   min_per_subject: 5
   max_missing_fraction: 0.05
 sampling:
+  request_seed: null
   bootstrap: 10000
   alpha: 0.05
 ```
 
-`margin: 0.05` means **five percentage points of excess answer disagreement**, in either direction. It is an illustrative design choice, not a recommended universal threshold or an authenticity percentage. Justify it using the intended application and independent pilot data. At 140 questions, a tight tolerance can legitimately remain inconclusive. More independent questions generally help more than counting all cross-response pairs as independent trials.
+The margin is a recorded comparison aid in percentage points of excess disagreement, not a significance threshold or a certified acceptance rule. Choose it before inspecting results and explain its practical meaning. The complete [example configuration](../examples/consistency-providers.yaml) uses placeholder hosts.
 
-Start with [the complete configuration](../examples/consistency-providers.yaml):
+## Observable and missing-answer bounds
 
-```sh
-tmb prepare-dataset --output results/evaluation.json --per-category 20 --seed 78213
-tmb compare-dataset --config providers.local.yaml --dataset results/evaluation.json --repeats 2 --workers 4 --output results/audit --dry-run
-tmb compare-dataset --config providers.local.yaml --dataset results/evaluation.json --repeats 2 --workers 4 --output results/audit
-tmb report results/audit/run.json
-```
-
-Copy and customize the configuration first. The example has placeholder hosts and no keys. Twenty questions per subject gives 280 questions and 560 requests per endpoint with two repeats. There is no extra network request for analysis. This workflow uses the existing zero-shot MMLU-Pro [prompt and parser](dataset-protocol.md), with temperature/output limits supplied by the configuration. It remains a subset adaptation, not the official leaderboard evaluation.
-
-## What is estimated
-
-```mermaid
-flowchart LR
-    A["Reference responses A"] --> BASE["Per-question disagreement<br/>d(A,B)"]
-    B["Independent repeat responses B"] --> BASE
-    A --> PAIR["Per-question disagreement<br/>d(A,C)"]
-    C["Candidate responses C"] --> PAIR
-    BASE --> DELTA["Paired excess disagreement<br/>d(A,C) minus d(A,B)"]
-    PAIR --> DELTA
-    DELTA --> CI["Resample whole questions<br/>Keep endpoints and repeats together"]
-    MISSING["Unusable answers<br/>Worst-case lower and upper bounds"] --> CI
-    CI --> RESULT["Approximate simultaneous interval<br/>Compare with predeclared tolerance"]
-```
-
-The diagram shows one candidate-versus-reference contrast. The report performs the same operation for every planned pair except the baseline itself. Sharing a question cluster preserves the relationship between baseline difficulty and candidate disagreement.
-
-For question q and endpoints X,Y, let d_q(X,Y) be the fraction of the n² cross-response comparisons selecting different options. Keep the n responses and all endpoints together within a question cluster.
-
-For baseline aliases A,B, estimate:
+For each question q and endpoints X,Y, calculate the fraction of all n² cross-response pairs selecting different options. For baseline aliases A,B:
 
 ```
 excess(X,Y) = mean_q[d_q(X,Y) - d_q(A,B)]
 ```
 
-This is a paired contrast: difficult or ambiguous questions contribute both the pair's disagreement and the baseline's disagreement. Baseline uncertainty is included in the same resampling operation. The baseline pair itself is displayed once as a control; all other N(N−1)/2−1 pair contrasts are in the correction family. Accuracy is reported independently and never contributes to a consistency verdict.
+This estimates mean disagreement relative to the observed repeat baseline. It is not a distance between full answer distributions. Opposing question-level differences can cancel, and distinct distributions can have equal disagreement rates. Accuracy stays separate.
 
-**Scope of the estimand:** this measures mean answer-disagreement behavior over the sampled subject mixture. It is not a distance between complete response distributions. Two different answer distributions can produce the same mean disagreement; opposing question-level effects can cancel. A sharper or less stochastic provider can also differ from the baseline. Inspect question-level observations and the separate categorical MMD test. Passing this tolerance is weaker than establishing distributional equivalence.
-
-## Missing observations
-
-Transport errors, truncation, refusal, parser failure, suspected cached responses and missing requests never become valid answers. With K observed cross-response comparisons and D observed disagreements, bound the complete question's disagreement by:
+With K observed cross-response comparisons and D observed disagreements on a question:
 
 ```
 lower = D / n²
 upper = (D + n² - K) / n²
 ```
 
-For a pair's excess disagreement, subtract the baseline's upper bound from the pair's lower bound, and the baseline's lower bound from the pair's upper bound. Shared missing observations may make these bounds conservative. They require no missing-at-random assumption. A few failures widen the interval instead of automatically destroying the entire comparison; too many failures trigger the predeclared coverage gate. API errors are never automatically retried.
+Bound the excess using pair-lower minus baseline-upper and pair-upper minus baseline-lower. These bounds preserve failures without assuming missing-at-random. They are conservative finite-sample bounds, not confidence intervals. The n² cross-response pairs are not independent samples.
 
-## Approximate uncertainty and decisions
+## Descriptive bootstrap
 
-Resample whole questions with replacement **within each subject**, retaining all endpoints, repeats and missingness in each selected cluster. Use the same resampling indices for every contrast. This preserves pairing and the empirical subject mixture. For M planned non-baseline contrasts and family alpha, take the alpha/(2M) quantile of resampled lower means and the 1−alpha/(2M) quantile of resampled upper means.
+Resample whole questions within subjects, keeping all endpoints, repeats and failures together. Use the same cluster indices for all contrasts. For M planned non-baseline contrasts, report the alpha/(2M) quantile of resampled lower means and the 1-alpha/(2M) quantile of resampled upper means.
 
-This is a **percentile cluster bootstrap with Bonferroni tail allocation**, not an exact test or a finite-sample coverage guarantee. Correction does not repair a poorly calibrated bootstrap. The implementation requires at least 20 expected bootstrap draws in each corrected tail, a configurable minimum of 100 questions and five per subject by default, and rejects degenerate resampled contrasts because their bootstrap cannot quantify unseen variation. These are safeguards, not proofs of adequate power or coverage. Within-subject question dependence, small subject strata, rare events and unrepresentative selection can still invalidate the approximation.
+The report records `descriptive_bootstrap_interval`, its `interval_position` relative to the margin, missingness and quality-gate reasons. `control_separation_observed` describes a separated control interval, not an established power or sensitivity guarantee. Every new pair has `verdict: descriptive only`.
 
-| Result | Rule and interpretation |
-|---|---|
-| **within baseline tolerance** | The entire approximate simultaneous interval lies inside [−margin,+margin], the run meets coverage/comparability gates, and a baseline-versus-different-model contrast demonstrates positive excess beyond the margin. Supports this specified observable and tolerance only. |
-| **beyond baseline tolerance** | The interval lies wholly above +margin or below −margin and the run meets gates. Evidence of a practically different disagreement pattern; the cause could be serving configuration. |
-| **inconclusive** | The interval crosses a boundary, sensitivity was not demonstrated for a proposed consistency result, or collection, coverage, sample size, bootstrap resolution, degeneracy or known-condition checks fail. |
+The numerical checks retain a minimum question count, minimum subject count, missing-answer limit, nondegeneracy diagnostic and at least 20 expected bootstrap draws per allocated tail. They do not establish statistical coverage. Increasing bootstrap draws only improves Monte Carlo resolution.
 
-One different-model control demonstrates sensitivity to **that control**, not all substitutions. Synthetic operating-characteristic tests validate representative code paths, not real-provider false-positive rates. Independent pilot studies with several configurations and alternative models are necessary before using results for consequential decisions.
+A rare-question counterexample explains the limitation: with 100 questions and one observed disagreeing question, a nondegenerate bootstrap can place its upper endpoint at 5% even when the population disagreement exceeds 5%. Across several candidates, misleading inside-margin intervals can occur more often than nominal family alpha. Bonferroni allocation cannot repair undercoverage of each interval.
 
-Candidate contrasts are gated on known control, tokenizer, template, revision, quantization and serving-software mismatches. Different-model control contrasts are gated on requested-control mismatches only: a different tokenizer or checkpoint is expected for that role. All known differences remain recorded. Unknown metadata is a limitation, never evidence that settings match.
+For significance, inspect the separate categorical MMD test. It retains its strict complete-protocol rule. Missing required answers yield **inconclusive**, not a nonsignificant result. This descriptive supplement does not override that verdict.
 
-The original Holm-corrected categorical MMD test remains separate and unchanged. It asks whether parsed answer distributions differ and retains its complete-protocol requirement. Thus a report may show an inconclusive MMD test and a usable practical-tolerance interval. It can also show a small detectable distribution difference that falls within a practical tolerance. These address different questions.
+## Reproducibility and historical reports
 
-## Decision flow
+New collections record method `paired-disagreement-descriptive-v2`. Configuration, dataset hash, saved item-metadata hash, protocol, text policy and tool version determine the resume fingerprint. Changing the recorded margin requires a new collection. CLI and MCP validate this fingerprint before reporting; local hashes do not prove external preregistration.
 
-```mermaid
-flowchart TD
-    START["Frozen protocol + observations"] --> GATE{"Protocol gates pass?"}
-    GATE -- No --> INC["Inconclusive<br/>Report the reason and evidence"]
-    GATE -- Yes --> BOOT{"Bootstrap nondegenerate?"}
-    BOOT -- No --> INC
-    BOOT -- Yes --> OUT{"Interval beyond a boundary?"}
-    OUT -- Yes --> DIFF["Beyond baseline tolerance<br/>Direction and effect reported"]
-    OUT -- No --> IN{"Interval inside tolerance?"}
-    IN -- No --> INC
-    IN -- Yes --> CONTROL{"Different-model sensitivity shown?"}
-    CONTROL -- No --> INC
-    CONTROL -- Yes --> WITHIN["Within baseline tolerance<br/>For this observable and protocol"]
-```
+Old 0.2 manifests retain method `paired-disagreement-bootstrap-v1`. Their original calculations and labels can be reproduced for traceability, but reports explicitly warn that these historical tolerance labels have unestablished calibration. They are not validated equivalence conclusions. Old runs without a declared baseline do not acquire one retrospectively. Historical seeded inference is marked inconclusive.
 
-The interval is approximate, and a control demonstrates sensitivity only to the tested alternative. Neither branch establishes which weights were loaded. The categorical MMD test has its own null, correction and verdict; it is not an input to this tolerance decision.
-
-## Reproducibility and departures
-
-`protocol.consistency` records method `paired-disagreement-bootstrap-v1`, the baseline, tolerance and coverage gates. Config, dataset hash, sampling settings and text-storage policy contribute to the resume fingerprint. Changing the margin requires a new run. `analysis.consistency` records all contrasts, baseline bounds, effect bounds, approximate simultaneous intervals, coverage and reasons. Old runs without this predeclaration retain their original analysis; offline reporting does not retrofit a tolerance verdict.
-
-This is a repository-specific procedure. It borrows the principle of a prespecified practical bound from [Lakens (2017), Equivalence Tests](https://doi.org/10.1177/1948550617697177), but **does not implement that paper's parametric TOST procedures**. Whole-question resampling builds on [Efron's bootstrap framework](https://doi.org/10.1214/aos/1176344552); this particular interval's live-provider coverage has not been established. [Gao, Liang and Guestrin's Model Equality Testing](https://arxiv.org/abs/2410.20247) informs the separate distribution test, not a claim that this excess-disagreement rule reproduces their method or power results.
+This is a repository-specific descriptive procedure. [Efron's bootstrap framework](https://doi.org/10.1214/aos/1176344552) motivates resampling; it does not establish coverage of this particular construction. [Lakens on equivalence](https://doi.org/10.1177/1948550617697177) discusses prespecified bounds, but this code does not implement parametric TOST. [Model Equality Testing](https://arxiv.org/abs/2410.20247) informs the separate distribution test, not a claim that this baseline comparison reproduces that paper's method or power.

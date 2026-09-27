@@ -16,6 +16,7 @@ from .config import load_config
 from .probes import load_probes
 from .report import render
 from .runner import atomic_json, benchmark, estimate, plan
+from .validation import validate_manifest
 
 
 def main():
@@ -24,7 +25,7 @@ def main():
     )
     parser.add_argument("--version", action="version", version=__version__)
     commands = parser.add_subparsers(dest="command", required=True)
-    demo = commands.add_parser("demo", help="Run synthetic practical consistency without network or credentials")
+    demo = commands.add_parser("demo", help="Run synthetic distribution tests and baseline diagnostics offline")
     demo.add_argument("--output", type=Path, default=Path("results/demo"))
     demo.add_argument("--prepare-only", action="store_true", help="Write fixtures for CLI/MCP use without collecting")
     bench = commands.add_parser("benchmark", help="Run cumulative test levels")
@@ -41,6 +42,7 @@ def main():
     report = commands.add_parser("report", help="Recompute analysis and Markdown offline")
     report.add_argument("manifest", type=Path)
     report.add_argument("--output", type=Path)
+    report.add_argument("--dataset", type=Path, help="Verify saved item metadata against the frozen dataset")
     report.add_argument(
         "--reference", help="Designate a reference offline; write a separate derived JSON/report"
     )
@@ -112,8 +114,16 @@ def main():
             return int(run["remaining_requests"] > 0 or any(r["status"] != "ok" for r in run["requests"]))
         if args.command == "report":
             run = json.loads(args.manifest.read_text(encoding="utf-8"))
-            if run.get("tool_version") not in {"0.1.0", __version__}:
-                raise ValueError("Use the tool version recorded in the manifest for reproducibility")
+            if args.output and args.output.resolve() == args.manifest.resolve():
+                raise ValueError("Report output must not overwrite the evidence manifest")
+            package = None
+            if args.dataset:
+                from .datasets import load_dataset
+
+                if run.get("kind") != "choice-dataset":
+                    raise ValueError("--dataset verification requires a dataset manifest")
+                package = load_dataset(args.dataset)
+            run["validation"] = validate_manifest(run, package)
             if run.get("kind") == "choice-dataset":
                 from .choice_analysis import analyze_choices, render_choices
 

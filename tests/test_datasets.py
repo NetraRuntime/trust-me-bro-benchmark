@@ -156,12 +156,12 @@ def test_missing_answer_bounds_cover_every_possible_completion():
     run = {
         "protocol": {"repeats": 2},
         "config": {"endpoints": [{"name": "a"}, {"name": "b"}]},
-        "items": [{"id": "1"}],
+        "items": [{"id": "1", "option_count": 3}],
         "requests": [
-            {"endpoint": "a", "question_id": "1", "status": "ok", "choice": "A"},
-            {"endpoint": "a", "question_id": "1", "status": "truncated"},
-            {"endpoint": "b", "question_id": "1", "status": "ok", "choice": "A"},
-            {"endpoint": "b", "question_id": "1", "status": "ok", "choice": "B"},
+            {"endpoint": "a", "question_id": "1", "repeat": 0, "status": "ok", "choice": "A"},
+            {"endpoint": "a", "question_id": "1", "repeat": 1, "status": "truncated"},
+            {"endpoint": "b", "question_id": "1", "repeat": 0, "status": "ok", "choice": "A"},
+            {"endpoint": "b", "question_id": "1", "repeat": 1, "status": "ok", "choice": "B"},
         ],
     }
     result = disagreement_bounds(run)[0]

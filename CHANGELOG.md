@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.0
+
+- Keep MMD/permutation/Holm as the primary significance test. Reject shared request seeds for new statistical collections and mark historical seeded inference inconclusive.
+- Validate manifests in CLI, MCP and resume paths: protocol/config agreement, fingerprint, unique planned repeat slots, valid choices and consistent status totals. Bind new dataset item metadata into the protocol fingerprint (schema 2).
+- Add optional original-dataset verification to CLI `report --dataset` and MCP `read_report(dataset_path=...)`. Explicitly report when original dataset linkage is unverified. Prevent reports from overwriting their input manifest.
+- Include missing-answer questions in detailed tables even when surviving answers agree; show coverage and failure statuses.
+- Make new repeat-baseline bootstrap results descriptive only (`paired-disagreement-descriptive-v2`). Rare-question undercoverage prevents calibrated tolerance/equivalence verdicts from this method. Preserve historical 0.2 calculations with an explicit warning; do not relabel historical paid observations as a new study.
+- Add offline regression coverage for the audit counterexamples. The primary unseeded distribution-test formulas, correction family and failure policy are unchanged.
+
 ## 0.2.0
 
 - Add optional predeclared practical consistency against an independent same-configuration repeat baseline.

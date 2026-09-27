@@ -65,7 +65,7 @@ All paths are relative to `--root` or absolute paths within it. Resolved paths a
 | `plan_dataset` | `config_path`, `dataset_path`, optional `repeats=2`, `workers=1` | Validates files and returns hashes, endpoints, consistency declaration, budget estimate and blockers. No network or writes. |
 | `start_dataset` | Same fields plus `output`, optional `resume=false` | Revalidates the plan and starts a background job. Returns `job_id`; can incur API charges when enabled. Stores parsed choices and response hashes, never raw response text. |
 | `run_status` | `job_id` | Returns state, progress and, after completion, request statuses, estimated cost and missing usage. |
-| `read_report` | `manifest` | Recomputes a dataset report offline without changing the manifest or its frozen protocol. Returns Markdown and request status summary. |
+| `read_report` | `manifest`, optional `dataset_path` | Validates the protocol hash and observation slots, then recomputes a dataset report offline. Supply the frozen dataset to verify original item linkage; otherwise it is explicitly unverified. Returns Markdown and status summary. |
 
 `tmb://methodology` is a read-only resource explaining interpretation and the protocol source. Tools provide JSON structured output and MCP annotations; annotations are hints, not authorization boundaries. Rejected calls return a generic `error` object without sensitive exception details. Use `plan_dataset.blockers` for actionable planning failures. There is no dataset-download tool: freeze the public dataset with the CLI before giving it to the server.
 
@@ -75,7 +75,7 @@ Example interaction:
 plan_dataset(config_path="providers.local.yaml", dataset_path="results/evaluation.json", repeats=2, workers=4)
 start_dataset(config_path="providers.local.yaml", dataset_path="results/evaluation.json", output="results/audit", repeats=2, workers=4)
 run_status(job_id="<returned job ID>")
-read_report(manifest="results/audit/run.json")
+read_report(manifest="results/audit/run.json", dataset_path="results/evaluation.json")
 ```
 
 Review the plan and follow your client's confirmation policy before starting a paid run. The server's explicit startup opt-in and budgets are enforced regardless of tool annotations.

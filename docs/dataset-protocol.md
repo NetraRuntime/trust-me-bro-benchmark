@@ -2,7 +2,7 @@
 
 This protocol compares substantive answers on a published dataset. It is separate from the small `starter-1` suite and its levels. It implements neither KBF nor RUT, and it is not a full or official MMLU-Pro leaderboard evaluation.
 
-The optional [practical consistency protocol](consistency.md) adds a predeclared baseline-relative tolerance analysis. It propagates missing-answer bounds while retaining this page's original distribution test and strict failure rules. It cannot be retroactively attached to an old run by the report command.
+The optional [descriptive baseline comparison](consistency.md) propagates missing-answer bounds relative to repeat variability while retaining this page's original distribution test and strict failure rules. Version 0.3 does not issue tolerance/equivalence verdicts from its uncalibrated bootstrap. It cannot be retroactively attached to an old run by the report command.
 
 ## Dataset and selection
 
@@ -19,6 +19,8 @@ Request 2–4 independent responses per question per endpoint. The initial run u
 `choice-letter-v1` parses a complete string containing one valid option letter, ignoring letter case, surrounding whitespace, one simple Markdown wrapper, an optional `Answer:`/`Option:` prefix, parentheses and a final period. It does not extract a convenient letter from arbitrary prose. Ambiguous, invalid, empty, refused, truncated, cached and failed responses remain explicit failures. There is no normalization of question text or code identifiers.
 
 Question order and endpoint submission order are randomized from the recorded seed. Endpoint requests within a question/repeat block may run concurrently, with a configurable worker bound. Every block is journaled before dispatch; the main thread atomically saves each result. The next block waits for the previous one. No API retries or provider fallback. Resume does not resend interrupted or failed observations. Already in-flight requests can finish after a reported budget overrun; no further blocks launch.
+
+Statistical collection requires a null API request seed. A shared seed across endpoint aliases can couple observations; the separate local random seed still controls schedule and offline analysis reproducibility. Before reporting, validate unique planned question/endpoint/repeat slots, legal choices, status totals and the frozen protocol hash. New dataset manifests bind saved item metadata into that fingerprint. Supply the frozen dataset to verify original item linkage; without it reports explicitly mark that linkage unverified.
 
 ## Three separate outputs
 
