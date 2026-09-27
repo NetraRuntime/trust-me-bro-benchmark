@@ -81,7 +81,7 @@ def test_no_sensitivity_no_consistency_and_high_missingness():
 
 
 def test_insufficient_degenerate_incomplete_and_mismatched_are_inconclusive():
-    for variant in ("few", "degenerate", "pending", "mismatch", "resolution"):
+    for variant in ("few", "degenerate", "pending", "mismatch", "resolution", "tiny_strata"):
         run = fixture(questions=30 if variant == "few" else 100)
         if variant == "degenerate":
             for row in run["requests"]:
@@ -92,6 +92,9 @@ def test_insufficient_degenerate_incomplete_and_mismatched_are_inconclusive():
             run["config"]["endpoints"][0]["reasoning_enabled"] = False
         if variant == "resolution":
             run["protocol"]["bootstrap"] = 100
+        if variant == "tiny_strata":
+            for item in run["items"]:
+                item["category"] = item["id"]
         assert pair(analyze_consistency(run), "reference", "candidate")["verdict"] == "inconclusive"
 
 
@@ -100,6 +103,17 @@ def test_duplicate_observation_rejected():
     run["requests"].append(run["requests"][0])
     with pytest.raises(ValueError, match="Duplicate"):
         analyze_consistency(run)
+
+
+def test_different_model_provenance_is_expected_but_candidate_mismatch_is_not():
+    run = fixture()
+    run["config"]["endpoints"][-1]["tokenizer"] = "other-model-tokenizer"
+    run["config"]["endpoints"][-1]["checkpoint_revision"] = "other-model-revision"
+    result = analyze_consistency(run)
+    assert result["sensitivity_demonstrated"]
+    assert pair(result, "reference", "candidate")["verdict"] == "within baseline tolerance"
+    run["config"]["endpoints"][2]["tokenizer"] = "mismatched-candidate-tokenizer"
+    assert pair(analyze_consistency(run), "reference", "candidate")["verdict"] == "inconclusive"
 
 
 def test_predeclaration_requires_matched_baseline_control_and_resolution():

@@ -60,6 +60,12 @@ class MockAdapter:
     def sample(self, endpoint, body, sample_id):
         rng = random.Random(int(digest(sample_id), 16))
         text = rng.choice(["1", "2"]) if endpoint.mock_behavior == "a" else rng.choice(["8", "9"])
+        if endpoint.mock_behavior in {"choice_a", "choice_b"}:
+            text = (
+                rng.choice(["A"] * 9 + ["B"])
+                if endpoint.mock_behavior == "choice_a"
+                else rng.choice(["C"] * 9 + ["B"])
+            )
         status = {"error": "transport_error", "truncated": "truncated"}.get(endpoint.mock_behavior, "ok")
         return {
             "status": status,

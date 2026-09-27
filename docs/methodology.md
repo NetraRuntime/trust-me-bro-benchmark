@@ -1,5 +1,7 @@
 # Methodology: protocol v0.1
 
+This page describes the legacy cumulative smoke-test suite. For substantive dataset comparisons, use the [parsed-choice protocol](dataset-protocol.md) and optional [practical consistency protocol](consistency.md). Practical tolerance evidence is separate from non-rejection of a distribution test.
+
 ## Estimand and observations
 
 For a fixed prompt, compare the distributions of successful, untruncated visible assistant strings under the requested settings. Whitespace, punctuation and Unicode are not normalized. Reasoning traces and tool calls are not analyzed. All endpoints receive identical prompts, roles and output limits; omitted controls are recorded. Accepting a setting does not prove it was honored.
@@ -43,7 +45,7 @@ Descriptive uncertainty: independently bootstrap samples within each endpoint/pr
 
 ## Reference audit
 
-Level 4 adds a reference view of existing level-3 comparisons, with no extra requests. No reference means an explicit skip. Known control, tokenizer, template, revision, quantization or reasoning mismatches make the reference conclusion inconclusive. Unknown settings still limit comparability. Non-rejection is phrased “consistent with reference under this protocol (no difference detected),” never “verified authentic.” Reference provenance must be established externally, even for a local deployment. The rank-based uniformity test is not implemented.
+Level 4 adds a reference view of existing level-3 comparisons, with no extra requests. No reference means an explicit skip. Known control, tokenizer, template, revision, quantization or reasoning mismatches make the reference conclusion inconclusive. Unknown settings still limit comparability. New runs phrase non-rejection as “no difference detected against designated reference.” Historical v0.1 reports retain their original “consistent with reference under this protocol (no difference detected)” wording for reproducibility; this was not a tolerance/equivalence result. Reference provenance must be established externally, even for a local deployment. The rank-based uniformity test is not implemented.
 
 ## Research relationship and departures
 

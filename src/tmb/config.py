@@ -24,7 +24,7 @@ class Endpoint(Strict):
     model: str
     api_key_env: str | None = Field(default=None, pattern=r"^[A-Za-z_][A-Za-z0-9_]*$")
     adapter: Literal["openai", "mock"] = "openai"
-    mock_behavior: Literal["a", "b", "error", "truncated"] = "a"
+    mock_behavior: Literal["a", "b", "error", "truncated", "choice_a", "choice_b"] = "a"
     unsupported_controls: list[Literal["temperature", "top_p", "seed"]] = []
     provider: str | None = None
     reasoning_effort: Literal["none", "minimal", "low", "medium", "high"] | None = None
@@ -62,7 +62,7 @@ class Sampling(Strict):
     repeats: dict[int, int] = {0: 1, 1: 8, 2: 2, 3: 20}
     max_tokens: dict[int, int] = {0: 16, 1: 16, 2: 128, 3: 128}
     permutations: int = Field(default=999, ge=99, le=99999)
-    bootstrap: int = Field(default=300, ge=100, le=10000)
+    bootstrap: int = Field(default=300, ge=100, le=100000)
     min_samples: int = Field(default=8, ge=4)
     alpha: float = Field(default=0.05, gt=0, lt=1)
 
@@ -85,6 +85,7 @@ class Consistency(Strict):
     baseline: tuple[str, str]
     margin: float = Field(gt=0, lt=1)
     min_questions: int = Field(default=100, ge=30)
+    min_per_subject: int = Field(default=5, ge=2)
     max_missing_fraction: float = Field(default=0.05, ge=0, lt=1)
 
 

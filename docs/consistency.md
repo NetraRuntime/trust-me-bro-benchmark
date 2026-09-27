@@ -20,6 +20,7 @@ consistency:
   baseline: [reference, reference_repeat]
   margin: 0.05
   min_questions: 100
+  min_per_subject: 5
   max_missing_fraction: 0.05
 sampling:
   bootstrap: 10000
@@ -40,6 +41,21 @@ tmb report results/audit/run.json
 Copy and customize the configuration first. The example has placeholder hosts and no keys. Twenty questions per subject gives 280 questions and 560 requests per endpoint with two repeats. There is no extra network request for analysis. This workflow uses the existing zero-shot MMLU-Pro [prompt and parser](dataset-protocol.md), with temperature/output limits supplied by the configuration. It remains a subset adaptation, not the official leaderboard evaluation.
 
 ## What is estimated
+
+```mermaid
+flowchart LR
+    A["Reference responses A"] --> BASE["Per-question disagreement<br/>d(A,B)"]
+    B["Independent repeat responses B"] --> BASE
+    A --> PAIR["Per-question disagreement<br/>d(A,C)"]
+    C["Candidate responses C"] --> PAIR
+    BASE --> DELTA["Paired excess disagreement<br/>d(A,C) minus d(A,B)"]
+    PAIR --> DELTA
+    DELTA --> CI["Resample whole questions<br/>Keep endpoints and repeats together"]
+    MISSING["Unusable answers<br/>Worst-case lower and upper bounds"] --> CI
+    CI --> RESULT["Approximate simultaneous interval<br/>Compare with predeclared tolerance"]
+```
+
+The diagram shows one candidate-versus-reference contrast. The report performs the same operation for every planned pair except the baseline itself. Sharing a question cluster preserves the relationship between baseline difficulty and candidate disagreement.
 
 For question q and endpoints X,Y, let d_q(X,Y) be the fraction of the n² cross-response comparisons selecting different options. Keep the n responses and all endpoints together within a question cluster.
 
@@ -68,7 +84,7 @@ For a pair's excess disagreement, subtract the baseline's upper bound from the p
 
 Resample whole questions with replacement **within each subject**, retaining all endpoints, repeats and missingness in each selected cluster. Use the same resampling indices for every contrast. This preserves pairing and the empirical subject mixture. For M planned non-baseline contrasts and family alpha, take the alpha/(2M) quantile of resampled lower means and the 1−alpha/(2M) quantile of resampled upper means.
 
-This is a **percentile cluster bootstrap with Bonferroni tail allocation**, not an exact test or a finite-sample coverage guarantee. Correction does not repair a poorly calibrated bootstrap. The implementation requires at least 20 expected bootstrap draws in each corrected tail, a configurable minimum of 100 questions by default, and rejects wholly degenerate contrast samples because their bootstrap cannot quantify unseen variation. These are safeguards, not proofs of adequate power or coverage. Within-subject question dependence, small subject strata, rare events and unrepresentative selection can still invalidate the approximation.
+This is a **percentile cluster bootstrap with Bonferroni tail allocation**, not an exact test or a finite-sample coverage guarantee. Correction does not repair a poorly calibrated bootstrap. The implementation requires at least 20 expected bootstrap draws in each corrected tail, a configurable minimum of 100 questions and five per subject by default, and rejects degenerate resampled contrasts because their bootstrap cannot quantify unseen variation. These are safeguards, not proofs of adequate power or coverage. Within-subject question dependence, small subject strata, rare events and unrepresentative selection can still invalidate the approximation.
 
 | Result | Rule and interpretation |
 |---|---|
@@ -78,7 +94,28 @@ This is a **percentile cluster bootstrap with Bonferroni tail allocation**, not 
 
 One different-model control demonstrates sensitivity to **that control**, not all substitutions. Synthetic operating-characteristic tests validate representative code paths, not real-provider false-positive rates. Independent pilot studies with several configurations and alternative models are necessary before using results for consequential decisions.
 
+Candidate contrasts are gated on known control, tokenizer, template, revision, quantization and serving-software mismatches. Different-model control contrasts are gated on requested-control mismatches only: a different tokenizer or checkpoint is expected for that role. All known differences remain recorded. Unknown metadata is a limitation, never evidence that settings match.
+
 The original Holm-corrected categorical MMD test remains separate and unchanged. It asks whether parsed answer distributions differ and retains its complete-protocol requirement. Thus a report may show an inconclusive MMD test and a usable practical-tolerance interval. It can also show a small detectable distribution difference that falls within a practical tolerance. These address different questions.
+
+## Decision flow
+
+```mermaid
+flowchart TD
+    START["Frozen protocol + observations"] --> GATE{"Protocol gates pass?"}
+    GATE -- No --> INC["Inconclusive<br/>Report the reason and evidence"]
+    GATE -- Yes --> BOOT{"Bootstrap nondegenerate?"}
+    BOOT -- No --> INC
+    BOOT -- Yes --> OUT{"Interval beyond a boundary?"}
+    OUT -- Yes --> DIFF["Beyond baseline tolerance<br/>Direction and effect reported"]
+    OUT -- No --> IN{"Interval inside tolerance?"}
+    IN -- No --> INC
+    IN -- Yes --> CONTROL{"Different-model sensitivity shown?"}
+    CONTROL -- No --> INC
+    CONTROL -- Yes --> WITHIN["Within baseline tolerance<br/>For this observable and protocol"]
+```
+
+The interval is approximate, and a control demonstrates sensitivity only to the tested alternative. Neither branch establishes which weights were loaded. The categorical MMD test has its own null, correction and verdict; it is not an input to this tolerance decision.
 
 ## Reproducibility and departures
 

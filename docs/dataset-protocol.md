@@ -2,6 +2,8 @@
 
 This protocol compares substantive answers on a published dataset. It is separate from the small `starter-1` suite and its levels. It implements neither KBF nor RUT, and it is not a full or official MMLU-Pro leaderboard evaluation.
 
+The optional [practical consistency protocol](consistency.md) adds a predeclared baseline-relative tolerance analysis. It propagates missing-answer bounds while retaining this page's original distribution test and strict failure rules. It cannot be retroactively attached to an old run by the report command.
+
 ## Dataset and selection
 
 `tmb prepare-dataset` downloads the test split of [TIGER-Lab/MMLU-Pro](https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro), pins its full Hugging Face commit SHA, and records the Parquet SHA-256. Within each subject, sort question IDs by SHA-256 of the JSON-encoded selection seed, category and ID; take a fixed number from each category. This is reproducible and independent of model answers. The frozen JSON includes source provenance, selection rules, questions, options, gold labels and a content hash. It refuses overwrite.

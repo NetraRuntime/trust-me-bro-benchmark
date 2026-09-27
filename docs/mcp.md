@@ -2,6 +2,28 @@
 
 `tmb-mcp` exposes dataset planning, collection and offline reporting to Model Context Protocol clients. It uses the [official Python MCP SDK v2](https://py.sdk.modelcontextprotocol.io/) over **stdio**. There is no HTTP listener, remote login, shell execution tool or credential-setting tool.
 
+```mermaid
+sequenceDiagram
+    participant H as MCP client
+    participant S as tmb-mcp
+    participant W as Background worker
+    participant F as Local manifest
+    H->>S: plan_dataset(config, dataset)
+    S-->>H: Hashes, endpoints, estimate, blockers
+    H->>S: start_dataset(output)
+    S->>S: Revalidate paths, live opt-in and budgets
+    S->>W: Start bounded collection
+    S-->>H: Job ID
+    loop While collection runs
+        W->>F: Persist observations
+        H->>S: run_status(job ID)
+        S-->>H: Progress and explicit failures
+    end
+    H->>S: read_report(manifest)
+    S->>F: Load saved observations
+    S-->>H: Recomputed offline report
+```
+
 ## Install and connect
 
 ```sh

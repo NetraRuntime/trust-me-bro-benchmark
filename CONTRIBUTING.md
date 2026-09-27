@@ -2,7 +2,7 @@
 
 Keep the first run simple and the scientific claims narrow. A behavioral benchmark is useful only when a reader can inspect its assumptions and reproduce its analysis.
 
-1. Install Python 3.11+ and run `python -m pip install -e '.[dev]'` (or `uv sync --extra dev`).
+1. Install Python 3.11+ and run `python -m pip install -e '.[dev,mcp]'` (or `uv sync --extra dev --extra mcp`).
 2. Run `python -m pytest -q` and `ruff check .` before submitting changes.
 3. Explain the observable change and include relevant offline evidence. Never add real credentials, private prompts or paid API results to a contribution.
 
@@ -12,4 +12,4 @@ Statistical changes need a written null hypothesis, estimator, resampling proced
 
 Version changes to probes and statistical interpretation; preserve enough evidence to reproduce old reports. Separate calibration and final evaluation sets. Protocol/config changes must reject resume rather than mix experiments.
 
-Useful next contributions include calibrated same-configuration controls, additional adapters, richer string kernels, explicit capability discovery, multi-message probes and independently tested rank-based audits. Discuss scientific scope before adding an identity verdict.
+Useful next contributions include independent live calibration studies, richer dataset/task adapters, additional protocols, explicit capability discovery and independently tested rank-based audits. The current tolerance procedure needs more operating-characteristic studies, especially near tolerance boundaries and with dependent questions. Discuss scientific scope before adding a new verdict. See [architecture](docs/architecture.md) for module boundaries and [practical consistency](docs/consistency.md) for the current estimator and assumptions.

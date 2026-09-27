@@ -8,6 +8,7 @@ import uuid
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
+from . import __version__
 from .adapters import redact
 from .choice_analysis import analyze_choices, render_choices
 from .config import load_config
@@ -166,6 +167,8 @@ class BenchmarkService:
         run = json.loads(self.path(manifest).read_text(encoding="utf8"))
         if run.get("kind") != "choice-dataset" or run.get("schema_version") != 1:
             raise ValueError("Expected a supported dataset manifest")
+        if run.get("tool_version") not in {"0.1.0", __version__}:
+            raise ValueError("Use the recorded tool version for this manifest")
         if any(r["status"] == "in_flight" for r in run["requests"]):
             raise ValueError("Run has in-flight observations; inspect job status first")
         run["analysis"] = analyze_choices(run)

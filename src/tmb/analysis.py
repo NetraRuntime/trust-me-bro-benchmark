@@ -186,6 +186,8 @@ def analyze(run):
                     ):
                         p["verdict"] = (
                             "consistent with reference under this protocol (no difference detected)"
+                            if run.get("tool_version") == "0.1.0"
+                            else "no difference detected against designated reference"
                         )
                     reference_pairs.append(p)
         levels["4"] = {

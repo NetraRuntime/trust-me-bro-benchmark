@@ -46,7 +46,7 @@ Required: `name`, `base_url`, `model`. Names are unique letters/digits/underscor
 | `api_key_env` | Environment variable name; omit for an unauthenticated local endpoint. |
 | `adapter` | `openai` (default) or deterministic `mock`. |
 | `role` | `candidate` (default) or `different_model_control`; control pairs are labelled separately and cannot supply the claimed-checkpoint reference. |
-| `mock_behavior` | `a` (same distribution), `b` (different), `error`, or `truncated`. |
+| `mock_behavior` | `a`/`b` for legacy digit fixtures; `choice_a`/`choice_b` for parsed-choice fixtures; `error` or `truncated` for failures. |
 | `unsupported_controls` | List drawn from `temperature`, `top_p`, `seed`; omitted from that endpoint's requests and recorded. |
 | `provider` | OpenRouter route slug; sends `provider.only`, `allow_fallbacks: false`, `require_parameters: true`. |
 | `reasoning_effort` | Optional `none`, `minimal`, `low`, `medium`, `high`; only use where supported. |
@@ -81,6 +81,10 @@ Set `probes_file: probes.local.yaml`. The file replaces the bundled suite and mu
 `role` defaults to `user`; `system` is also supported. This initial suite format is single-message, not arbitrary conversations. Private text stays out of the manifest even with `--store-text`, though responses can echo it. Keep IDs non-sensitive. Never tune the suite or thresholds on your final evaluation samples.
 
 ## CLI and schema
+
+Dataset practical consistency adds an optional top-level `consistency` object. `baseline` names two identical candidate configurations; `margin` is required and has no universal default. Defaults are `min_questions: 100`, `min_per_subject: 5`, and `max_missing_fraction: 0.05`. A different-model control is required. Bootstrap draws must provide at least 20 expected observations per multiplicity-adjusted tail; up to 100,000 draws are accepted. Larger families may need more draws. See [the complete protocol](consistency.md) and [example YAML](../examples/consistency-providers.yaml). This option is supported only by `compare-dataset`, not the legacy `benchmark` command.
+
+`tmb demo --output results/demo` creates a complete synthetic dataset comparison without network calls. `--prepare-only` writes fixtures for use with MCP or a later `compare-dataset` command. The output directory must be empty.
 
 `tmb --help`, `tmb benchmark --help`, and `tmb report --help` describe all switches. Exit codes: 0 for a successfully generated complete-request report, 1 for a benchmark with failed/unfinished requests, 2 for configuration/file errors, 130 for interruption. A statistically inconclusive comparison can still have exit code 0. Offline `report` returns 0 after successful rendering, even for an incomplete original run.
 

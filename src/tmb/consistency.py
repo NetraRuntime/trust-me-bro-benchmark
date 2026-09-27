@@ -4,6 +4,7 @@ Question clusters, not cross-response pairs, are the resampling units. Intervals
 are approximate bootstrap intervals; this observable is not a distribution metric.
 """
 
+from collections import Counter
 from itertools import combinations
 
 import numpy as np
@@ -57,22 +58,22 @@ def analyze_consistency(run):
         observed = bounds(left, right)
         lower = observed[:, 0] - base[:, 1]
         upper = observed[:, 1] - base[:, 0]
-        interval = [
-            float(np.quantile(lower[draws].mean(axis=1), tail)),
-            float(np.quantile(upper[draws].mean(axis=1), 1 - tail)),
-        ]
+        lower_draws, upper_draws = lower[draws].mean(axis=1), upper[draws].mean(axis=1)
+        interval = [float(np.quantile(lower_draws, tail)), float(np.quantile(upper_draws, 1 - tail))]
         reasons = []
         if run.get("remaining_requests", 0) or any(r["status"] == "in_flight" for r in run["requests"]):
             reasons.append("Collection is incomplete")
         involved = set(baseline) | {left, right}
         if len(items) < spec["min_questions"]:
             reasons.append("Too few question clusters for the predeclared protocol")
+        if min(Counter(i["category"] for i in items).values()) < spec.get("min_per_subject", 5):
+            reasons.append("Too few questions in a subject stratum")
         if any(missing[name] > spec["max_missing_fraction"] + 1e-12 for name in involved):
             reasons.append("Missing-answer fraction exceeds the predeclared limit")
         if protocol["bootstrap"] * tail < 20:
             reasons.append("Insufficient bootstrap tail resolution")
         # A collapsed nonparametric bootstrap cannot quantify unseen variation.
-        if np.ptp(lower) < 1e-12 and np.ptp(upper) < 1e-12:
+        if np.ptp(lower_draws) < 1e-12 and np.ptp(upper_draws) < 1e-12:
             reasons.append("Degenerate question bootstrap; unseen variation is unquantified")
         fields = (
             "unsupported_controls",
@@ -84,7 +85,12 @@ def analyze_consistency(run):
             "quantization",
             "serving_software",
         )
-        if any(len({str(endpoints[name].get(f)) for name in involved}) > 1 for f in fields):
+        different_control = any(endpoints[x]["role"] == "different_model_control" for x in (left, right))
+        known_differences = [f for f in fields if len({str(endpoints[name].get(f)) for name in involved}) > 1]
+        # A different model is expected to have a different tokenizer/revision. Only
+        # requested-control mismatches invalidate that sensitivity check.
+        gated_fields = fields[:3] if different_control else fields
+        if any(f in known_differences for f in gated_fields):
             reasons.append("Known serving/control mismatch limits matched-condition attribution")
         candidate = "inconclusive"
         margin = spec["margin"]
@@ -97,9 +103,8 @@ def analyze_consistency(run):
             {
                 "left": left,
                 "right": right,
-                "kind": "different-model control"
-                if any(endpoints[x]["role"] == "different_model_control" for x in (left, right))
-                else "candidate",
+                "kind": "different-model control" if different_control else "candidate",
+                "known_configuration_differences": known_differences,
                 "verdict": candidate,
                 "reasons": reasons,
                 "questions": len(items),
@@ -146,11 +151,15 @@ def render_consistency(result):
         "",
         "## Practical consistency against repeat baseline",
         "",
-        (f"Method: {result['method']}. Baseline: {cell(result['baseline'])}. "
-        f"Predeclared excess-disagreement margin: ±{result['margin']:.1%}."),
+        (
+            f"Method: {result['method']}. Baseline: {cell(result['baseline'])}. "
+            f"Predeclared excess-disagreement margin: ±{result['margin']:.1%}."
+        ),
         "",
-        (f"{result['correction']}; family alpha={result['family_alpha']}. "
-        f"Different-model sensitivity demonstrated: {result['sensitivity_demonstrated']}."),
+        (
+            f"{result['correction']}; family alpha={result['family_alpha']}. "
+            f"Different-model sensitivity demonstrated: {result['sensitivity_demonstrated']}."
+        ),
         "",
         "Intervals incorporate worst-case missing answers and sampling uncertainty; bootstrap coverage is approximate.",
         "",

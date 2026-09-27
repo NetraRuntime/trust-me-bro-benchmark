@@ -203,11 +203,15 @@ def render_choices(run):
     analysis = run["analysis"]
     names = list(analysis["scores"])
     lines = [
-        "# Dataset comparison: MMLU-Pro answer choices",
+        "# Synthetic dataset demonstration"
+        if run["dataset"].get("dataset") == "synthetic-demo"
+        else "# Dataset comparison: MMLU-Pro answer choices",
         "",
         LIMIT,
         "",
-        "This is a balanced, zero-shot direct-answer subset, not an official MMLU-Pro leaderboard score.",
+        "Synthetic fixtures only; accuracy has no model-capability meaning."
+        if run["dataset"].get("dataset") == "synthetic-demo"
+        else "This is a balanced, zero-shot direct-answer subset, not an official MMLU-Pro leaderboard score.",
         "",
         f"Run: {run['run_id']}. Window: {run['started_at']} to {run['updated_at']}.",
         "",
@@ -348,7 +352,11 @@ def render_choices(run):
             if p["known_configuration_differences"]:
                 wording = "inconclusive for matched-reference attribution: known configuration differences"
             elif wording == "no difference detected" and p["kind"] != "different-model control":
-                wording = "consistent with reference under this protocol (no difference detected)"
+                wording = (
+                    "consistent with reference under this protocol (no difference detected)"
+                    if run.get("tool_version") == "0.1.0"
+                    else "no difference detected against designated reference"
+                )
             lines.append(f"- {cell(p['left'])} / {cell(p['right'])}: {wording}.")
     lines += [
         "",

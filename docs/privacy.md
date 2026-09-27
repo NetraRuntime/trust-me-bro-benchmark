@@ -11,3 +11,5 @@ Response text and reasoning traces are not stored by default. Public bundled pro
 Hashes and counts suffice to reproduce this JSD/exact-match analysis without raw text or keys. They do not permit semantic reanalysis or prove requests were sent. Retain private probe files separately and securely to repeat experiments, checking the suite hash.
 
 Prompts are sent to configured providers; their retention policies apply. `tmb` uses no separate telemetry service. Results, `.env` files and `*.local.yaml` are ignored by Git. Never force-add paid API results or private probes. Local retention is your responsibility; local deletion does not delete a provider's copy.
+
+MCP reads only paths within the server's configured workspace and starts live requests only with explicit server-owner opt-in. Keys are inherited from that process's environment, never MCP arguments. MCP collection stores parsed choices and hashes, with raw response storage disabled. Reports returned to a client may expose question IDs, choices and operational metadata; give the server a workspace appropriate for the connected agent. See [MCP limits and recovery](mcp.md).

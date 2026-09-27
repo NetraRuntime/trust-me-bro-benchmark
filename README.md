@@ -2,13 +2,30 @@
 
 # Trust Me Bro Benchmark
 
-**Your providers claim to serve the same model. Compare the evidence.**
+**Does your provider behave like the model it claims to serve?**
 
 Trust Me Bro (`tmb`) compares **two or more API endpoints claiming to serve the same model** and produces reproducible evidence about whether their behavior is consistent. Start with DeepSeek, or point the same model-agnostic engine at any OpenAI-compatible chat API.
 
 No leaderboard. No authenticity percentage. No majority vote that declares a winner.
 
-[Quick start](#quick-start) · [Dataset comparison](#compare-a-published-dataset) · [Real providers](#compare-real-providers) · [Test levels](#choose-your-test-budget) · [Methodology](docs/methodology.md) · [Threat model](docs/threat-model.md) · [Configuration](docs/configuration.md)
+[Quick start](#quick-start) · [Practical consistency](#measure-practical-consistency) · [Dataset comparison](#compare-a-published-dataset) · [MCP](docs/mcp.md) · [Documentation](docs/README.md)
+
+## How it works
+
+```mermaid
+flowchart TD
+    A["Freeze dataset, controls and tolerance"] --> B["Plan budget and collect matched prompts"]
+    B --> C["Reference + repeat, candidates and different-model control"]
+    C --> D["Save parsed answers and explicit failures"]
+    D --> E["Distribution differences"]
+    D --> F["Practical baseline tolerance"]
+    D --> G["Accuracy and coverage"]
+    E --> H["Reproducible JSON and standalone report"]
+    F --> H
+    G --> H
+```
+
+The same engine runs from the CLI or an MCP client. The report explains **what was compared, how large the differences were, and how much uncertainty remains**. It provides behavioral evidence; it cannot inspect remote weights. See [the module diagram](docs/architecture.md#inside-the-repository) and [the verdict decision flow](docs/consistency.md#decision-flow).
 
 ## What the result means
 
@@ -20,7 +37,7 @@ An API-only test **cannot conclusively prove which weights a remote provider loa
 | Does a provider behave like a separately trusted deployment? | **Reference comparison:** consistency with your designated reference under this protocol. |
 | Is this definitely the original checkpoint? | **Identity proof:** outside the scope of black-box behavioral testing. |
 
-Statistical verdicts are **detectably different**, **no difference detected**, or **inconclusive**. A nonsignificant result is not proof of equality. Every comparison includes its effect estimate, sample counts, uncertainty or its absence, and limitations. Early levels are explicitly descriptive.
+Distribution-test verdicts are **detectably different**, **no difference detected**, or **inconclusive**. A nonsignificant result is not evidence of equivalence. The optional practical-consistency protocol reports **within baseline tolerance**, **beyond baseline tolerance**, or **inconclusive**, using an independently sampled repeat control and a tolerance fixed before evaluation. Every comparison reports effect size, coverage, uncertainty and limitations. Accuracy, latency and cost never become identity scores.
 
 **The bundled suite is a smoke test.** Its six statistical prompts are too narrow for a comprehensive checkpoint audit. An exact-string test can detect capitalization alone, such as `Biru` versus `biru`, even when both answers mean the same thing. Reports expose each probe's contribution so a narrow formatting signal is visible. See [datasets and stronger audit protocols](docs/datasets.md) before interpreting a live comparison.
 
@@ -33,13 +50,15 @@ git clone https://github.com/NetraRuntime/trust-me-bro-benchmark.git
 cd trust-me-bro-benchmark
 python -m pip install -e .
 
-tmb benchmark --config examples/mock.yaml --level 1 --output results/quick
-tmb report results/quick/run.json
+tmb demo --output results/demo
+tmb report results/demo/run/run.json
 ```
 
-Open `results/quick/report.md`. The adjacent `run.json` is the machine-readable manifest and evidence bundle.
+Open `results/demo/run/report.md`. The adjacent `run.json` is the machine-readable manifest and evidence bundle. The demo creates 300 synthetic questions and four mock endpoints: a reference, its repeat alias, a same-distribution candidate, and a different-distribution control. These are fixtures, not DeepSeek measurements; their accuracy has no capability meaning.
 
-The mock config has three endpoints: two sample the same synthetic distribution and one samples a different distribution. These are test fixtures, **not DeepSeek measurements**.
+The demo uses a fixture-specific 12-point tolerance. Real evaluations require their own independently justified margin.
+
+For a smaller smoke test, run `tmb benchmark --config examples/mock.yaml --level 1 --output results/quick`. That fixture has three endpoints and uses the original constrained-output suite.
 
 Try the complete statistical workflow, including a designated mock reference:
 
@@ -48,7 +67,42 @@ tmb benchmark --config examples/mock.yaml --level 4 --output results/full
 tmb report results/full/run.json
 ```
 
-Using uv? Run `uv sync --extra dev`, then prefix commands with `uv run`.
+Using uv? Run `uv sync --extra dev --extra mcp --extra datasets`, then prefix commands with `uv run`.
+
+## Measure practical consistency
+
+The practical question is whether a provider's answer disagreement is comparable to a repeat deployment of the claimed model, within a justified tolerance. Start from [consistency-providers.yaml](examples/consistency-providers.yaml), with a designated reference, an identically configured repeat alias, a candidate provider and a different-model control.
+
+```yaml
+consistency:
+  baseline: [reference, reference_repeat]
+  margin: 0.05
+  min_questions: 100
+  min_per_subject: 5
+  max_missing_fraction: 0.05
+sampling:
+  bootstrap: 10000
+  alpha: 0.05
+```
+
+Here, `0.05` means **five percentage points of excess answer disagreement** relative to the baseline, in either direction. It is an illustrative design choice, not a universal threshold or an authenticity percentage. Justify it using practical requirements and separate pilot questions; do not tune it on final evaluation responses.
+
+Use the dataset commands below after configuring all four endpoints. A **within baseline tolerance** result requires an approximate simultaneous uncertainty interval entirely inside the margin, adequate coverage, matched known conditions, and sensitivity demonstrated against a different-model control. Missing responses widen worst-case bounds instead of automatically destroying this comparison. Excessive failures, weak controls, degenerate bootstrap samples or insufficient data still yield **inconclusive**.
+
+This estimates a specific observable: mean answer disagreement. Equal disagreement rates can conceal different distributions, and the question-cluster bootstrap has approximate coverage. Keep the separate categorical MMD test and question-level evidence in view. No majority vote establishes ground truth.
+
+Read [the exact method and departures](docs/consistency.md), [report interpretation](docs/interpreting-results.md), and [configuration](docs/configuration.md).
+
+## Use from an MCP client
+
+```sh
+python -m pip install -e '.[mcp]'
+tmb-mcp --root /absolute/path/to/your/workspace
+```
+
+The stdio server exposes `plan_dataset`, `start_dataset`, `run_status`, `read_report`, and `tmb://methodology`. Runs execute in a background job. Real API requests require the server owner's explicit `--allow-network` startup option and per-run request, token and estimated-cost limits. Keys stay in the server environment.
+
+See [client configuration, examples and recovery](docs/mcp.md). To create local fixtures for MCP without starting collection, run `tmb demo --output results/mcp-demo --prepare-only`.
 
 ## Compare a published dataset
 
@@ -141,7 +195,7 @@ Each run writes:
 * **`run.json`** — run ID, version, sanitized config, suite hash, settings, UTC timestamps, request statuses, response IDs, hashes, token usage, costs and statistical results.
 * **`report.md`** — standalone report with an N × N matrix for every requested level, pairwise evidence, per-probe observations, response representatives, and a separate reference section at level 4.
 
-Failures never disappear from a pair. Transport failures, HTTP errors, missing credentials, refusals, truncations, empty responses and suspected cached completions have explicit statuses. Any missing or invalid required sample makes that pair inconclusive. No string collisions or insufficient permutation resolution also yields an inconclusive level-3 result.
+Failures never disappear from a pair. Transport failures, HTTP errors, missing credentials, refusals, truncations, empty responses and suspected cached completions have explicit statuses. The original distribution tests retain their strict rule: any missing or invalid required sample makes that test inconclusive. The optional practical-consistency analysis instead propagates missing-answer bounds and applies its predeclared coverage gates. No string collisions or insufficient permutation resolution also yields an inconclusive legacy level-3 result.
 
 Reports retain response hashes by default. They preserve exact equality, permitting offline reproduction of this implementation's JSD and MMD analysis. Use `--store-text` to inspect redacted response wording; this is necessary for semantic disagreement review, and can still expose personal data. Private prompts are never saved automatically. Read the [privacy guidance](docs/privacy.md).
 
@@ -153,11 +207,13 @@ tmb benchmark --config providers.local.yaml --level 3 --output results/full-live
 
 Keep the config, suite, level, tool version and `--store-text` policy unchanged. Completed and failed requests are not resent. An interrupted in-flight request becomes `interrupted_unknown`; the server may already have billed it, so resume does not silently resend it. That pair remains inconclusive. Start a new run to recollect a complete protocol.
 
+For dataset runs, repeat the original `compare-dataset` command with `--resume`, preserving dataset, repeats, workers and consistency settings. Version 0.2 can render 0.1 reports without adding retrospective tolerance verdicts; resuming old collections requires their original version.
+
 The manifest is replaced atomically after each request. Brief local file locks receive a bounded replacement retry; this never resends an API request. A lock prevents concurrent writers. After a hard process kill, remove `results/full-live/.run.lock` **only after confirming no runner still uses it**. Budget exhaustion cannot be bypassed by resume; changing the budget requires a new run.
 
 ## Scientific scope
 
-This is an initial working implementation, not a calibrated model-authentication product. Synthetic controls test the procedure; they do not establish power for DeepSeek or any live endpoint. The small public suite is deliberately inspectable and can be recognized by a provider.
+This is a behavioral evidence tool, not a model-authentication product. The new protocol measures a concurrent repeat baseline; synthetic controls test its implementation, but do not establish live-provider coverage or general power. The public suite can be recognized by a provider.
 
 * **Relative evidence:** compare every pair; never crown the largest cluster as ground truth.
 * **Reference evidence:** match checkpoint revision, tokenizer, template, reasoning mode and requested controls. Known differences limit attribution; unknown settings remain caveats.
@@ -180,13 +236,13 @@ For available datasets, scope, and integration requirements, read the [dataset g
 ## Contribute
 
 ```sh
-python -m pip install -e '.[dev]'
+python -m pip install -e '.[dev,mcp]'
 python -m pytest -q
 ruff check .
 ```
 
 The code separates [adapters](src/tmb/adapters.py), [probes](src/tmb/probes.py), [orchestration](src/tmb/runner.py), [statistics](src/tmb/statistics.py), [analysis](src/tmb/analysis.py) and [reporting](src/tmb/report.py). Offline tests require no credentials and make no network requests.
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for protocol changes and reproducibility requirements. Never commit credentials, private probes, or real paid API results. See [SECURITY.md](SECURITY.md) for private vulnerability reporting.
+See [CONTRIBUTING.md](CONTRIBUTING.md), [architecture](docs/architecture.md), and [CHANGELOG.md](CHANGELOG.md) for protocol changes and reproducibility requirements. Never commit credentials, private probes, or real paid API results. See [SECURITY.md](SECURITY.md) for private vulnerability reporting.
 
 Licensed under the OSI-approved [MIT License](LICENSE).

@@ -21,6 +21,7 @@ consistency:
   baseline: [reference, reference_repeat]
   margin: 0.05 # Illustrative, not a universal threshold. Justify before evaluation.
   min_questions: 100
+  min_per_subject: 5
   max_missing_fraction: 0.05
 sampling:
   temperature: 0.6

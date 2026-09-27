@@ -24,6 +24,9 @@ def main():
     )
     parser.add_argument("--version", action="version", version=__version__)
     commands = parser.add_subparsers(dest="command", required=True)
+    demo = commands.add_parser("demo", help="Run synthetic practical consistency without network or credentials")
+    demo.add_argument("--output", type=Path, default=Path("results/demo"))
+    demo.add_argument("--prepare-only", action="store_true", help="Write fixtures for CLI/MCP use without collecting")
     bench = commands.add_parser("benchmark", help="Run cumulative test levels")
     bench.add_argument("--config", type=Path, required=True)
     bench.add_argument("--level", type=int, choices=range(5), default=1)
@@ -58,6 +61,20 @@ def main():
     dataset.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     try:
+        if args.command == "demo":
+            from .choice_analysis import render_choices
+            from .dataset_runner import compare_dataset
+            from .demo import prepare_demo
+
+            config, package = prepare_demo(args.output)
+            if args.prepare_only:
+                print(f"Synthetic fixtures: {args.output}")
+                return 0
+            run = compare_dataset(config, package, args.output / "run", workers=4)
+            destination = args.output / "run" / "report.md"
+            destination.write_text(render_choices(run), encoding="utf8")
+            print(f"Synthetic demonstration (no real providers): {destination}")
+            return 0
         if args.command == "prepare-dataset":
             from .datasets import prepare_dataset
 
@@ -95,7 +112,7 @@ def main():
             return int(run["remaining_requests"] > 0 or any(r["status"] != "ok" for r in run["requests"]))
         if args.command == "report":
             run = json.loads(args.manifest.read_text(encoding="utf-8"))
-            if run.get("tool_version") != __version__:
+            if run.get("tool_version") not in {"0.1.0", __version__}:
                 raise ValueError("Use the tool version recorded in the manifest for reproducibility")
             if run.get("kind") == "choice-dataset":
                 from .choice_analysis import analyze_choices, render_choices
