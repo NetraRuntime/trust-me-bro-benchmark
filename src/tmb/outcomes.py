@@ -34,6 +34,8 @@ def analyze_outcomes(run):
             reason = "Required attempts were not all recorded"
         elif any(r["status"] in INVALIDATING_STATUSES for r in involved):
             reason = "Unknown delivery, local setup failure or suspected cached completion invalidates inference"
+        elif any(r.get("http_status") in (401, 402) for r in involved):
+            reason = "Authentication or account-credit failure invalidates provider attribution"
         pair = {"left": left, "right": right, "complete": complete,
                 "verdict": "inconclusive", "reason": reason}
         if not reason:

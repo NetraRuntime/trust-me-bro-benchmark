@@ -38,3 +38,7 @@ def test_outcome_test_rejects_uncollected_or_nonindependent_samples():
     run = fixture()
     run["config"]["sampling"]["request_seed"] = 3
     assert "p_value" not in analyze_outcomes(run)["pairs"][0]
+    for code in (401, 402):
+        run = fixture()
+        run["requests"][0].update(status="http_error", http_status=code)
+        assert "p_value" not in analyze_outcomes(run)["pairs"][0]
