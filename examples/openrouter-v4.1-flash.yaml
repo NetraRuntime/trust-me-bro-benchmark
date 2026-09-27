@@ -1,0 +1,25 @@
+# Provider catalog snapshot: 2026-09-27. Recheck availability/prices before use.
+# This file makes real paid requests when OPENROUTER_API_KEY is set.
+claimed_model: deepseek/deepseek-v4.1-flash
+endpoints:
+  - name: openrouter_deepinfra
+    base_url: https://openrouter.ai/api/v1
+    model: deepseek/deepseek-v4.1-flash
+    api_key_env: OPENROUTER_API_KEY
+    provider: deepinfra/fp8
+    reasoning_effort: none
+    quantization: fp8
+    prices: {input_per_million: 0.14, output_per_million: 0.42}
+  - name: openrouter_novita
+    base_url: https://openrouter.ai/api/v1
+    model: deepseek/deepseek-v4.1-flash
+    api_key_env: OPENROUTER_API_KEY
+    provider: novita/fp8
+    reasoning_effort: none
+    quantization: fp8
+    prices: {input_per_million: 0.195, output_per_million: 0.78}
+limits:
+  max_requests: 400
+  max_total_tokens: 100000
+  max_cost_usd: 0.25
+  timeout_seconds: 45

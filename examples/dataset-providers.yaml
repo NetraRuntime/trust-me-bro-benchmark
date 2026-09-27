@@ -1,0 +1,24 @@
+# Placeholder hosts/models. Configure real endpoints and export the named keys.
+claimed_model: deepseek/example-checkpoint
+endpoints:
+  - name: provider_a
+    base_url: https://example-a.invalid/v1
+    model: deepseek/example-checkpoint
+    api_key_env: PROVIDER_A_API_KEY
+  - name: provider_b
+    base_url: https://example-b.invalid/v1
+    model: deepseek/example-checkpoint
+    api_key_env: PROVIDER_B_API_KEY
+# reference: provider_a  # Only when you independently designate it as your reference.
+sampling:
+  temperature: 0.6
+  top_p: 1
+  random_seed: 20260927
+  permutations: 9999
+  bootstrap: 1000
+  max_tokens: {0: 16, 1: 16, 2: 128, 3: 256}
+limits:
+  max_requests: 3000
+  max_total_tokens: 5000000
+  timeout_seconds: 45
+# Add endpoint input/output prices to estimate spend; a cost ceiling requires every endpoint's prices.

@@ -1,0 +1,15 @@
+claimed_model: deepseek/example-checkpoint
+endpoints:
+  - name: netra
+    base_url: https://example-netra.invalid/v1
+    model: deepseek/example-checkpoint
+    api_key_env: NETRA_API_KEY
+  - name: provider_b
+    base_url: https://example-b.invalid/v1
+    model: deepseek/example-checkpoint
+    api_key_env: PROVIDER_B_API_KEY
+  - name: provider_c
+    base_url: https://example-c.invalid/v1
+    model: deepseek/example-checkpoint
+    api_key_env: PROVIDER_C_API_KEY
+# reference: provider_c  # Your designation, not an independently certified reference.

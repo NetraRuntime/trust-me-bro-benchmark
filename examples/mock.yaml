@@ -1,0 +1,17 @@
+claimed_model: deepseek/example-checkpoint
+endpoints:
+  - name: mock_a
+    adapter: mock
+    base_url: mock://a
+    model: example
+  - name: mock_same
+    adapter: mock
+    base_url: mock://same
+    model: example
+  - name: mock_different
+    adapter: mock
+    base_url: mock://different
+    model: example
+    mock_behavior: b
+reference: mock_a
+
