@@ -1,0 +1,17 @@
+{
+  "python": "3.12.11",
+  "platform": "Windows",
+  "machine": "AMD64",
+  "collection_source_commit": "4ecc14fe32cebd0fbb4528c3b331c92ad5211ca2",
+  "statistical_source_note": "Later report-only changes do not alter the prespecified collector or test.",
+  "installed_distribution_metadata": {
+    "trust-me-bro-benchmark": "0.2.0",
+    "numpy": "2.5.3",
+    "httpx": "0.28.1",
+    "pydantic": "2.13.5",
+    "PyYAML": "6.0.3",
+    "pyarrow": "24.0.0"
+  },
+  "tool_source_version": "0.3.0",
+  "editable_install_note": "The editable package distribution metadata still reads 0.2.0; imported source and run manifests use version 0.3.0 from the recorded source commit. Dependencies were not changed during collection."
+}

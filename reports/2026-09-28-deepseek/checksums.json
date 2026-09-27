@@ -1,0 +1,26 @@
+{
+  "deepseek-v4.1-flash": {
+    "original_manifest_sha256": "28a765fab25fc12c6cb1bd46aba2497ab033b2e6387f8f978380604e6901f6a5",
+    "collection_source_commit": "4ecc14fe32cebd0fbb4528c3b331c92ad5211ca2",
+    "excluded_fields": [
+      "analysis",
+      "requests[].response_id",
+      "requests[].text"
+    ],
+    "note": "Reviewed public derivative; credentials and raw response text are excluded. Local original remains unchanged.",
+    "public_json_sha256": "fc7ed7fa82f605aa37dc1f13d283196e31307fb043e1394e2e95a38ec1116105",
+    "public_gzip_sha256": "f78e5ad52b65e4fb52caf64f1d34af7b6c4aaf6eb3aa09d58811373c3c2f3f6c"
+  },
+  "deepseek-v4-flash-0731": {
+    "original_manifest_sha256": "e2b9447e79ebcdb2512a4035018c1037455b280b703ef127b0e711cec6ee8dbb",
+    "collection_source_commit": "4ecc14fe32cebd0fbb4528c3b331c92ad5211ca2",
+    "excluded_fields": [
+      "analysis",
+      "requests[].response_id",
+      "requests[].text"
+    ],
+    "note": "Reviewed public derivative; credentials and raw response text are excluded. Local original remains unchanged.",
+    "public_json_sha256": "2cb6d03a8932e8372b975b9017e314143036170888a75bf31c325c2da8db12dd",
+    "public_gzip_sha256": "2a48ab967bd94b214feeebf16b18a2a1af60d29a9d395f9cba0e7f99e1c84c8a"
+  }
+}

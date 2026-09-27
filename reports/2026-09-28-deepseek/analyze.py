@@ -44,6 +44,14 @@ def percent(value):
     return f"{value:.2%}"
 
 
+def effect_interval(pair):
+    effect = pair.get("effect_size")
+    if effect is None:
+        return "—"
+    interval = pair.get("descriptive_interval_95")
+    return number(effect) + (f" [{number(interval[0])}, {number(interval[1])}]" if interval else "")
+
+
 def provenance_issues(run):
     """Do not attribute a comparison to a route its response metadata contradicts."""
     issues = {}
@@ -200,6 +208,28 @@ def render_model(slug, run, study):
             ),
             "",
         ]
+    direct_pairs = [
+        p
+        for p in outcomes
+        if "netra" in (p["left"], p["right"]) and "deepinfra_repeat" not in (p["left"], p["right"])
+    ]
+    direct_summary = []
+    for verdict, phrase in (
+        ("detectably different", "Detectably different from"),
+        ("no difference detected", "No difference detected against"),
+        ("inconclusive", "Inconclusive against"),
+    ):
+        others = [
+            LABELS[p["right"] if p["left"] == "netra" else p["left"]]
+            for p in direct_pairs
+            if p["campaign_verdict"] == verdict
+        ]
+        if others:
+            direct_summary.append(phrase + " " + ", ".join(others) + ".")
+    lines += [
+        "**Direct Netra API versus OpenRouter routes (API outcomes):** " + " ".join(direct_summary),
+        "",
+    ]
     if study["route_issues"]:
         lines += ["### Route-evidence limitations", ""]
         lines += [
@@ -224,6 +254,7 @@ def render_model(slug, run, study):
     for endpoint in run["config"]["endpoints"]:
         name = endpoint["name"]
         score = study["answers"]["scores"][name]
+        correct = sum(subject["correct"] for subject in score["by_category"].values())
         rows = [r for r in run["requests"] if r["endpoint"] == name]
         latency = [
             r["latency_seconds"]
@@ -242,7 +273,7 @@ def render_model(slug, run, study):
         )
         timing = f"{np.quantile(latency, 0.5):.2f}s / {np.quantile(latency, 0.95):.2f}s" if latency else "—"
         lines.append(
-            f"| {LABELS[name]} | {score['valid']}/{score['planned']} | {percent(score['observed_correct_over_planned'])} | "
+            f"| {LABELS[name]} | {score['valid']}/{score['planned']} | {correct}/{score['planned']} ({percent(score['observed_correct_over_planned'])}) | "
             f"{percent(lo)}–{percent(hi)} | {timing} | ${cost:.4f} |"
         )
     lines += [
@@ -253,18 +284,55 @@ def render_model(slug, run, study):
             "These are listed-price estimates, not receipts; unknown failed-request billing, cache discounts and fees are not resolved."
         ),
         "",
+        "### Observed token usage",
+        "",
+        (
+            "2,048 is an output ceiling, not a target response length. This direct-answer task requests a single option letter. "
+            "The table summarizes reported usage where available; it does not measure sustained long-output throughput. "
+            "Token accounting is reported by each endpoint and may differ between providers."
+        ),
+        "",
+        "| Provider | Requests with input/output usage | Input tokens p50 | Output tokens p50 / p95 / maximum |",
+        "|---|---:|---:|---:|",
+    ]
+    for name in names:
+        usage = [
+            r["usage"]
+            for r in run["requests"]
+            if r["endpoint"] == name
+            and (r.get("usage") or {}).get("prompt_tokens") is not None
+            and (r.get("usage") or {}).get("completion_tokens") is not None
+        ]
+        inputs = [u["prompt_tokens"] for u in usage]
+        outputs = [u["completion_tokens"] for u in usage]
+        input_summary = number(float(np.median(inputs)), 1) if inputs else "—"
+        output_summary = (
+            f"{np.median(outputs):.1f} / {np.quantile(outputs, 0.95):.1f} / {max(outputs)}"
+            if outputs
+            else "—"
+        )
+        lines.append(f"| {LABELS[name]} | {len(usage)} | {input_summary} | {output_summary} |")
+    lines += [
+        "",
         "### Failure accounting",
         "",
-        "| Provider | Recorded non-success statuses |",
-        "|---|---|",
+        "| Provider | Recorded non-success statuses | HTTP error codes |",
+        "|---|---|---|",
     ]
     for name in names:
         counts = Counter(
             r["status"] for r in run["requests"] if r["endpoint"] == name and r["status"] != "ok"
         )
+        http_codes = Counter(
+            r["http_status"]
+            for r in run["requests"]
+            if r["endpoint"] == name and (r.get("http_status") or 0) >= 400
+        )
         lines.append(
             f"| {LABELS[name]} | "
             + (", ".join(f"{k}: {v}" for k, v in sorted(counts.items())) or "None")
+            + " | "
+            + (", ".join(f"{k}: {v}" for k, v in sorted(http_codes.items())) or "None")
             + " |"
         )
     lines += [
@@ -273,18 +341,19 @@ def render_model(slug, run, study):
         "",
         (
             "MMD² is the mean unbiased categorical effect estimate; negative estimates are allowed. "
+            "Bracketed 95% bootstrap intervals are descriptive and pointwise, not simultaneous confidence guarantees. "
             "The p-values below are campaign-adjusted. A dash indicates that inference was invalid, not p=0 or nonsignificance."
         ),
         "",
-        "| Pair | Answer result | Answer MMD² | Adjusted p | API-outcome result | Outcome MMD² | Adjusted p |",
+        "| Pair | Answer result | Answer MMD² [interval] | Adjusted p | API-outcome result | Outcome MMD² [interval] | Adjusted p |",
         "|---|---|---:|---:|---|---:|---:|",
     ]
     for answer, outcome in zip(primary, outcomes):
         assert (answer["left"], answer["right"]) == (outcome["left"], outcome["right"])
         lines.append(
             f"| {LABELS[answer['left']]} / {LABELS[answer['right']]} | {answer['campaign_verdict']} | "
-            f"{number(answer.get('effect_size'))} | {number(answer['campaign_adjusted_p_value'], 5)} | "
-            f"{outcome['campaign_verdict']} | {number(outcome.get('effect_size'))} | {number(outcome['campaign_adjusted_p_value'], 5)} |"
+            f"{effect_interval(answer)} | {number(answer['campaign_adjusted_p_value'], 5)} | "
+            f"{outcome['campaign_verdict']} | {effect_interval(outcome)} | {number(outcome['campaign_adjusted_p_value'], 5)} |"
         )
     repeat = next(p for p in outcomes if {p["left"], p["right"]} == {"deepinfra", "deepinfra_repeat"})
     lines += [
@@ -363,12 +432,14 @@ def render_model(slug, run, study):
             missing = run["protocol"]["repeats"] - sum(choices[name].values())
             cells.append(text + (f"; missing {missing}" if missing else ""))
         lines.append(f"| {item['id']} | {item['category']} | {item['answer']} | " + " | ".join(cells) + " |")
+    catalog = json.loads((ROOT / "route-catalog.json").read_text(encoding="utf8"))[slug]
+    quantization = {e["endpoint"]: e["advertised_quantization"] for e in catalog["routes"]}
     lines += [
         "",
         "## Exact routes and controls",
         "",
-        "| Provider | Access path | Pinned route | Returned model metadata |",
-        "|---|---|---|---|",
+        "| Provider | Access path | Pinned route | Catalog precision | Returned model metadata |",
+        "|---|---|---|---|---|",
     ]
     for e in run["config"]["endpoints"]:
         returned = sorted(
@@ -379,7 +450,7 @@ def render_model(slug, run, study):
             }
         )
         lines.append(
-            f"| {LABELS[e['name']]} | {'OpenRouter' if e['provider'] else 'Direct Netra API'} | `{e['provider'] or e['model']}` | "
+            f"| {LABELS[e['name']]} | {'OpenRouter' if e['provider'] else 'Direct Netra API'} | `{e['provider'] or e['model']}` | {quantization[e['name']]} | "
             + ", ".join(f"`{m}`" for m in returned)
             + " |"
         )
@@ -388,7 +459,8 @@ def render_model(slug, run, study):
         (
             "Requested settings: temperature 0.6, top-p 1, reasoning disabled, max output 2,048 tokens, no API seed, "
             "120-second timeout, no retries and no provider fallback. Exact-tag routing and returned metadata were checked. "
-            "Metadata is a provider assertion, not independent attestation of weights or precision."
+            "Metadata is a provider assertion, not independent attestation of weights or precision. "
+            "Advertised precision comes from the [pre-collection catalog snapshot](route-catalog.json); unknown remains unknown."
         ),
         "",
         "## Method and limitations",
@@ -411,6 +483,7 @@ def render_model(slug, run, study):
             "limit generalization. A failed or invalid answer can reflect formatting rather than knowledge. "
             "The API-outcome test includes that distinction as observable behavior; it cannot resolve the underlying cause. "
             "HTTP-429 responses may reflect provider, router or account limits: error bodies and retry headers are not retained, so their origin is not established. "
+            "Main-run raw response text was not retained: readers can reproduce the statistics, but cannot independently reparse the original responses. "
             "Four repeats per question do not guarantee power against subtle differences. No equivalence or model-identity claim is made."
         ),
         "",
@@ -418,12 +491,16 @@ def render_model(slug, run, study):
         "",
         f"- [Reviewed observations](evidence/{slug}.json.gz), with raw text and provider response IDs excluded.",
         "- [Combined campaign analysis](campaign-analysis.json.gz), containing per-question effects, descriptive intervals and both correction scopes.",
-        "- [Frozen dataset](dataset.json), [protocol](protocol.json) and [pilot accounting](pilot-summary.json).",
+        "- [Frozen dataset](dataset.json), [independent source verification](dataset-verification.json), [protocol](protocol.json) and [pilot accounting](pilot-summary.json).",
+        "- [Recorded runtime versions](runtime.json); dependency resolution is retained in the repository's `uv.lock`.",
+        "- [Dataset attribution and selection](DATASET.md).",
+        "- [Independent result verification](result-verification.json), recomputed directly from the reviewed observations.",
         f"- [Exact configuration](configs/{slug}.yaml).",
         "",
         "```sh",
         "python -m pip install -e .",
         "python reports/2026-09-28-deepseek/analyze.py",
+        "python reports/2026-09-28-deepseek/verify_results.py",
         "```",
         "",
         (
@@ -445,6 +522,62 @@ def main():
     (ROOT / "campaign-analysis.json.gz").write_bytes(gzip.compress(payload, mtime=0))
     for slug, run in runs.items():
         (ROOT / f"{slug}.md").write_text(render_model(slug, run, result["studies"][slug]), encoding="utf8")
+    index = [
+        "# DeepSeek provider benchmark — 28 September 2026",
+        "",
+        (
+            "One main evaluation per model, using 280 questions across 14 subjects and four independently requested responses per question per route. "
+            "Both use a 2,048-token ceiling. The setup pilot is excluded."
+        ),
+        "",
+        "| Report | Distinct providers | Valid / planned answers | Known-usage estimate |",
+        "|---|---:|---:|---:|",
+    ]
+    for slug, run in runs.items():
+        valid = sum(r["status"] == "ok" for r in run["requests"])
+        index.append(
+            f"| [{TITLES[slug]}]({slug}.md) | {len(run['config']['endpoints']) - 1} + repeat control | "
+            f"{valid:,}/{len(run['requests']):,} | ${run['known_cost_usd']:.4f} |"
+        )
+    index += [
+        "",
+        (
+            "Read the primary **answer-choice** result separately from the **API-outcome** supplement. "
+            "API outcomes include formatting and delivery failures; significance there does not by itself establish different substantive answers. "
+            "Incomplete answer-only comparisons remain inconclusive. Non-rejection does not prove equivalence."
+        ),
+        "",
+        (
+            "Both reports share one Holm correction across all 98 planned tests, at alpha 0.05. "
+            "The protocol and endpoint configurations were published before main collection. Provider selection was curated, not exhaustive."
+        ),
+        "",
+        "- [Protocol and limitations](PROTOCOL.md)",
+        "- [Frozen plan](protocol.json) and [route catalog](route-catalog.json)",
+        "- [Independent dataset verification](dataset-verification.json)",
+        "- [Dataset attribution](DATASET.md)",
+        "- [Recorded runtime versions](runtime.json)",
+        "- [Reviewed evidence checksums](checksums.json)",
+        "- [Independent result verification](result-verification.json)",
+        "- [Machine-readable campaign analysis](campaign-analysis.json.gz)",
+        "",
+        "## Reproduce offline",
+        "",
+        "```sh",
+        "python -m pip install -e .",
+        "python reports/2026-09-28-deepseek/analyze.py",
+        "python reports/2026-09-28-deepseek/verify_results.py",
+        "```",
+        "",
+        "Optional figures: `uv run --no-project --with matplotlib==3.10.3 python reports/2026-09-28-deepseek/plot.py`.",
+        "",
+        (
+            "Costs are estimates from known token usage at recorded prices, not billing receipts. Missing usage, cache discounts and platform fees are not resolved. "
+            "These reports are API observations, not independent certification of weights or provider internals."
+        ),
+        "",
+    ]
+    (ROOT / "README.md").write_text("\n".join(index), encoding="utf8")
     print(
         json.dumps(
             {"analysis_sha256": hashlib.sha256(payload).hexdigest(), "family_size": result["family_size"]}

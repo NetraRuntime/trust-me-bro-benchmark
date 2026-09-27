@@ -1,0 +1,11 @@
+{
+  "attempts_verified": 16800,
+  "planned_tests_verified": 98,
+  "pair_effects_independently_recomputed": 49,
+  "checksums_verified": true,
+  "raw_text_and_response_ids_excluded": true,
+  "accuracy_and_missing_bounds_recomputed": true,
+  "holm_family_recomputed": true,
+  "analysis_gzip_sha256": "248056decc2dd7712fbbd572bfd999001fcc4845f7816b04b81eb0f984c74896",
+  "scope": "Arithmetic and publication checks only; no certification of provider assertions or statistical assumptions."
+}

@@ -1,0 +1,28 @@
+{
+  "source_url": "https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro/resolve/b189ec765aa7ed75c8acfea42df31fdae71f97be/data/test-00000-of-00001.parquet",
+  "source_sha256": "0e24a191921c2f453518a537a8b2117bd137e7714d4ef1565e9ba06c1ecb9ad8",
+  "upstream_rows": 12032,
+  "evaluation_items_exactly_verified": 280,
+  "pilot_items_exactly_verified": 14,
+  "disjoint": true,
+  "evaluation_subject_counts": {
+    "biology": 20,
+    "business": 20,
+    "chemistry": 20,
+    "computer science": 20,
+    "economics": 20,
+    "engineering": 20,
+    "health": 20,
+    "history": 20,
+    "law": 20,
+    "math": 20,
+    "other": 20,
+    "philosophy": 20,
+    "physics": 20,
+    "psychology": 20
+  },
+  "selected_gold_indices_match": true,
+  "duplicate_evaluation_question_texts": 1,
+  "duplicate_evaluation_full_prompts": 0,
+  "pilot_evaluation_full_prompt_overlap": 0
+}

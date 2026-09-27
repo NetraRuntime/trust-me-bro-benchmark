@@ -1,0 +1,117 @@
+{
+  "deepseek-v4.1-flash": {
+    "openrouter_snapshot_at": "2026-09-27T17:08:11.551803+00:00",
+    "routes": [
+      {
+        "endpoint": "dekallm",
+        "tag": "dekallm",
+        "advertised_quantization": "unknown",
+        "catalog_status": 0,
+        "source_url": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash/endpoints"
+      },
+      {
+        "endpoint": "deepinfra",
+        "tag": "deepinfra/fp8",
+        "advertised_quantization": "fp8",
+        "catalog_status": 0,
+        "source_url": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash/endpoints"
+      },
+      {
+        "endpoint": "novita",
+        "tag": "novita/fp8",
+        "advertised_quantization": "fp8",
+        "catalog_status": 0,
+        "source_url": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash/endpoints"
+      },
+      {
+        "endpoint": "fireworks",
+        "tag": "fireworks",
+        "advertised_quantization": "unknown",
+        "catalog_status": 0,
+        "source_url": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash/endpoints"
+      },
+      {
+        "endpoint": "together",
+        "tag": "together",
+        "advertised_quantization": "unknown",
+        "catalog_status": 0,
+        "source_url": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash/endpoints"
+      },
+      {
+        "endpoint": "parasail",
+        "tag": "parasail/fp8",
+        "advertised_quantization": "fp8",
+        "catalog_status": 0,
+        "source_url": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash/endpoints"
+      },
+      {
+        "endpoint": "netra",
+        "tag": null,
+        "advertised_quantization": "unknown",
+        "catalog_status": null,
+        "source_url": "https://api.netraruntime.com/v1/models"
+      },
+      {
+        "endpoint": "deepinfra_repeat",
+        "tag": "deepinfra/fp8",
+        "advertised_quantization": "fp8",
+        "catalog_status": 0,
+        "source_url": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash/endpoints"
+      }
+    ]
+  },
+  "deepseek-v4-flash-0731": {
+    "openrouter_snapshot_at": "2026-09-27T17:09:05.009173+00:00",
+    "routes": [
+      {
+        "endpoint": "deepinfra",
+        "tag": "deepinfra/fp8",
+        "advertised_quantization": "fp8",
+        "catalog_status": 0,
+        "source_url": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4-flash-0731/endpoints"
+      },
+      {
+        "endpoint": "novita",
+        "tag": "novita/fp8",
+        "advertised_quantization": "fp8",
+        "catalog_status": 0,
+        "source_url": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4-flash-0731/endpoints"
+      },
+      {
+        "endpoint": "together",
+        "tag": "together",
+        "advertised_quantization": "unknown",
+        "catalog_status": 0,
+        "source_url": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4-flash-0731/endpoints"
+      },
+      {
+        "endpoint": "coreweave",
+        "tag": "coreweave/fp8",
+        "advertised_quantization": "fp8",
+        "catalog_status": 0,
+        "source_url": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4-flash-0731/endpoints"
+      },
+      {
+        "endpoint": "nebius",
+        "tag": "nebius/fp8",
+        "advertised_quantization": "fp8",
+        "catalog_status": 0,
+        "source_url": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4-flash-0731/endpoints"
+      },
+      {
+        "endpoint": "netra",
+        "tag": null,
+        "advertised_quantization": "unknown",
+        "catalog_status": null,
+        "source_url": "https://api.netraruntime.com/v1/models"
+      },
+      {
+        "endpoint": "deepinfra_repeat",
+        "tag": "deepinfra/fp8",
+        "advertised_quantization": "fp8",
+        "catalog_status": 0,
+        "source_url": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4-flash-0731/endpoints"
+      }
+    ]
+  }
+}

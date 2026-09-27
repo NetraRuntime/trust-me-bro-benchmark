@@ -8,7 +8,7 @@ Trust Me Bro (`tmb`) compares **two or more API endpoints claiming to serve the 
 
 No leaderboard. No authenticity percentage. No majority vote that declares a winner.
 
-[Quick start](#quick-start) · [Statistical comparison](#compare-a-published-dataset) · [Repeat baseline](#inspect-repeat-baseline-disagreement) · [MCP](docs/mcp.md) · [Documentation](docs/README.md)
+[Published reports](reports/README.md) · [Quick start](#quick-start) · [Statistical comparison](#compare-a-published-dataset) · [Repeat baseline](#inspect-repeat-baseline-disagreement) · [MCP](docs/mcp.md) · [Documentation](docs/README.md)
 
 ## How it works
 
