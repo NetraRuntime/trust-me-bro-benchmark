@@ -66,6 +66,10 @@ def compare_dataset(
     if config.probes_file:
         raise ValueError("Dataset comparison uses --dataset, not probes_file")
     endpoints = {e.name: e for e in config.endpoints}
+    if config.consistency:
+        if same_pair and set(same_pair) != set(config.consistency.baseline):
+            raise ValueError("Same-configuration pair conflicts with consistency baseline")
+        same_pair = list(config.consistency.baseline)
     if same_pair:
         if len(set(same_pair)) != 2 or not set(same_pair) <= endpoints.keys():
             raise ValueError("Same-configuration control must name two distinct configured endpoints")
@@ -84,8 +88,14 @@ def compare_dataset(
         "same_configuration_pair": same_pair,
         "schedule": "randomized question/endpoint blocks",
     }
+    if config.consistency:
+        protocol["consistency"] = config.consistency.model_dump(mode="json") | {
+            "method": "paired-disagreement-bootstrap-v1",
+        }
     secrets = [os.environ.get(e.api_key_env, "") for e in config.endpoints if e.api_key_env]
     safe_config = redact(config.model_dump(mode="json"), secrets)
+    if not config.consistency:
+        safe_config.pop("consistency", None)  # Preserve v1 manifest/resume fingerprints.
     fingerprint = digest([safe_config, package["content_hash"], protocol, store_text, __version__])
     jobs = dataset_plan(config, package, repeats, protocol["seed"])
     planned = estimate(jobs)

@@ -1,0 +1,36 @@
+claimed_model: deepseek/example-checkpoint
+reference: reference
+endpoints:
+  - &reference
+    name: reference
+    base_url: https://example-reference.invalid/v1
+    model: deepseek/example-checkpoint
+    api_key_env: REFERENCE_API_KEY
+  - <<: *reference
+    name: reference_repeat
+  - name: candidate
+    base_url: https://example-candidate.invalid/v1
+    model: deepseek/example-checkpoint
+    api_key_env: CANDIDATE_API_KEY
+  - name: different_model
+    base_url: https://example-control.invalid/v1
+    model: other/example-checkpoint
+    api_key_env: CONTROL_API_KEY
+    role: different_model_control
+consistency:
+  baseline: [reference, reference_repeat]
+  margin: 0.05 # Illustrative, not a universal threshold. Justify before evaluation.
+  min_questions: 100
+  max_missing_fraction: 0.05
+sampling:
+  temperature: 0.6
+  top_p: 1
+  random_seed: 78213
+  permutations: 9999
+  bootstrap: 10000
+  alpha: 0.05
+  max_tokens: {0: 16, 1: 16, 2: 128, 3: 256}
+limits:
+  max_requests: 2240
+  max_total_tokens: 5000000
+  timeout_seconds: 45

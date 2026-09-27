@@ -99,6 +99,8 @@ def run_lock(output):
 
 
 def benchmark(config, probes, suite_hash, level, output, resume=False, store_text=False, client=None):
+    if config.consistency:
+        raise ValueError("Practical consistency is a dataset protocol; use compare-dataset")
     output = Path(output)
     output.mkdir(parents=True, exist_ok=True)
     with run_lock(output):
@@ -108,6 +110,7 @@ def benchmark(config, probes, suite_hash, level, output, resume=False, store_tex
 def _benchmark(config, probes, suite_hash, level, output, resume, store_text, client):
     secrets = [os.environ.get(e.api_key_env, "") for e in config.endpoints if e.api_key_env]
     safe_config = redact(config.model_dump(mode="json"), secrets)
+    safe_config.pop("consistency", None)  # This option is dataset-only; preserve legacy fingerprints.
     fingerprint = digest(
         {
             "config": safe_config,

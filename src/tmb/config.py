@@ -81,6 +81,13 @@ class Limits(Strict):
     timeout_seconds: float = Field(default=60, gt=0, le=600)
 
 
+class Consistency(Strict):
+    baseline: tuple[str, str]
+    margin: float = Field(gt=0, lt=1)
+    min_questions: int = Field(default=100, ge=30)
+    max_missing_fraction: float = Field(default=0.05, ge=0, lt=1)
+
+
 class Config(Strict):
     claimed_model: str
     endpoints: list[Endpoint] = Field(min_length=2)
@@ -88,6 +95,7 @@ class Config(Strict):
     sampling: Sampling = Field(default_factory=Sampling)
     limits: Limits = Field(default_factory=Limits)
     probes_file: str | None = None
+    consistency: Consistency | None = None
 
     @model_validator(mode="after")
     def providers(self):
@@ -100,6 +108,24 @@ class Config(Strict):
             raise ValueError("A different-model control cannot be the claimed-checkpoint reference")
         if self.limits.max_cost_usd and any(e.prices is None for e in self.endpoints):
             raise ValueError("A cost limit requires prices for every endpoint")
+        if self.consistency:
+            a, b = self.consistency.baseline
+            endpoints = {e.name: e for e in self.endpoints}
+            if a == b or a not in endpoints or b not in endpoints:
+                raise ValueError("Consistency baseline must name two distinct endpoints")
+            if any(endpoints[n].role != "candidate" for n in (a, b)):
+                raise ValueError("Baseline endpoints must be candidates")
+            if endpoints[a].model_dump(exclude={"name", "prices"}) != endpoints[b].model_dump(
+                exclude={"name", "prices"}
+            ):
+                raise ValueError("Consistency baseline requires identical endpoint settings")
+            if not any(e.role == "different_model_control" for e in self.endpoints):
+                raise ValueError("Consistency requires a different-model control")
+            family = len(names) * (len(names) - 1) // 2 - 1
+            if self.sampling.bootstrap * self.sampling.alpha / (2 * family) < 20:
+                raise ValueError(
+                    "Consistency needs at least 20 bootstrap draws per corrected tail; increase bootstrap"
+                )
         return self
 
 

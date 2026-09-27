@@ -185,11 +185,16 @@ def analyze_choices(run):
             if len(pairs) / (protocol["permutations"] + 1) > protocol["alpha"]:
                 pair["verdict"] = "inconclusive"
                 pair["reason"] = "Insufficient permutation resolution for the planned family"
-    return {
+    result = {
         "scores": scores,
         "pairs": pairs,
         "correction": f"Holm FWER across all {len(pairs)} planned pairs",
     }
+    if run["protocol"].get("consistency"):
+        from .consistency import analyze_consistency
+
+        result["consistency"] = analyze_consistency(run)
+    return result
 
 
 def render_choices(run):
@@ -418,4 +423,8 @@ def render_choices(run):
         ),
         "",
     ]
+    if analysis.get("consistency"):
+        from .consistency import render_consistency
+
+        lines.append(render_consistency(analysis["consistency"]))
     return "\n".join(lines)
