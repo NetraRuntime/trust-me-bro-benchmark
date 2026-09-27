@@ -1,0 +1,179 @@
+[
+  {
+    "model": "deepseek/deepseek-v4.1-flash",
+    "questions": 14,
+    "repeats": 2,
+    "statuses": {
+      "ok": 224
+    },
+    "estimated_known_cost_usd": 0.00947765,
+    "routes": [
+      {
+        "name": "dekallm",
+        "statuses": {
+          "ok": 28
+        },
+        "http_statuses": {
+          "200": 28
+        }
+      },
+      {
+        "name": "deepinfra",
+        "statuses": {
+          "ok": 28
+        },
+        "http_statuses": {
+          "200": 28
+        }
+      },
+      {
+        "name": "novita",
+        "statuses": {
+          "ok": 28
+        },
+        "http_statuses": {
+          "200": 28
+        }
+      },
+      {
+        "name": "fireworks",
+        "statuses": {
+          "ok": 28
+        },
+        "http_statuses": {
+          "200": 28
+        }
+      },
+      {
+        "name": "together",
+        "statuses": {
+          "ok": 28
+        },
+        "http_statuses": {
+          "200": 28
+        }
+      },
+      {
+        "name": "parasail",
+        "statuses": {
+          "ok": 28
+        },
+        "http_statuses": {
+          "200": 28
+        }
+      },
+      {
+        "name": "netra",
+        "statuses": {
+          "ok": 28
+        },
+        "http_statuses": {
+          "200": 28
+        }
+      },
+      {
+        "name": "deepinfra_repeat",
+        "statuses": {
+          "ok": 28
+        },
+        "http_statuses": {
+          "200": 28
+        }
+      }
+    ]
+  },
+  {
+    "model": "deepseek/deepseek-v4-flash-0731",
+    "questions": 14,
+    "repeats": 2,
+    "statuses": {
+      "ok": 204,
+      "unparseable": 14,
+      "http_error": 6
+    },
+    "estimated_known_cost_usd": 0.0068309064000000004,
+    "routes": [
+      {
+        "name": "deepinfra",
+        "statuses": {
+          "ok": 26,
+          "unparseable": 2
+        },
+        "http_statuses": {
+          "200": 28
+        }
+      },
+      {
+        "name": "novita",
+        "statuses": {
+          "ok": 26,
+          "unparseable": 2
+        },
+        "http_statuses": {
+          "200": 28
+        }
+      },
+      {
+        "name": "parasail",
+        "statuses": {
+          "ok": 20,
+          "unparseable": 2,
+          "http_error": 6
+        },
+        "http_statuses": {
+          "200": 22,
+          "429": 6
+        }
+      },
+      {
+        "name": "together",
+        "statuses": {
+          "ok": 26,
+          "unparseable": 2
+        },
+        "http_statuses": {
+          "200": 28
+        }
+      },
+      {
+        "name": "coreweave",
+        "statuses": {
+          "ok": 28
+        },
+        "http_statuses": {
+          "200": 28
+        }
+      },
+      {
+        "name": "nebius",
+        "statuses": {
+          "ok": 26,
+          "unparseable": 2
+        },
+        "http_statuses": {
+          "200": 28
+        }
+      },
+      {
+        "name": "netra",
+        "statuses": {
+          "ok": 26,
+          "unparseable": 2
+        },
+        "http_statuses": {
+          "200": 28
+        }
+      },
+      {
+        "name": "deepinfra_repeat",
+        "statuses": {
+          "ok": 26,
+          "unparseable": 2
+        },
+        "http_statuses": {
+          "200": 28
+        }
+      }
+    ]
+  }
+]

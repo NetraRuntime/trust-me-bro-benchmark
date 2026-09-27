@@ -1,0 +1,62 @@
+{
+  "frozen_at": "2026-09-27T17:25:40.386671+00:00",
+  "dataset_hash": "db0309b9d84feb51bc7e2def80bb191f19c4e3daf39d590d9a248355df9602a4",
+  "pilot_dataset_hash": "44db271b9d5a85576276af6df5a01387d865a7788ef8a6cbfe02f8a20efde6d0",
+  "evaluation_questions": 280,
+  "subjects": 14,
+  "sampling": {
+    "temperature": 0.6,
+    "top_p": 1,
+    "reasoning_enabled": false,
+    "max_tokens": 2048,
+    "request_seed": null,
+    "random_seed": 20260928
+  },
+  "campaign_budget_usd": 30,
+  "plans": [
+    {
+      "model": "deepseek/deepseek-v4.1-flash",
+      "config": "configs/deepseek-v4.1-flash.yaml",
+      "repeats": 4,
+      "workers": 8,
+      "repeat_control": [
+        "deepinfra",
+        "deepinfra_repeat"
+      ],
+      "reservation": {
+        "requests": 8960,
+        "input_token_reservation": 7877792,
+        "output_token_limit": 18350080,
+        "cost_estimate_usd": 16.09361446,
+        "caveat": "Input token estimates and prices are user assumptions, not a billing guarantee"
+      }
+    },
+    {
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "config": "configs/deepseek-v4-flash-0731.yaml",
+      "repeats": 4,
+      "workers": 7,
+      "repeat_control": [
+        "deepinfra",
+        "deepinfra_repeat"
+      ],
+      "reservation": {
+        "requests": 7840,
+        "input_token_reservation": 6893068,
+        "output_token_limit": 16056320,
+        "cost_estimate_usd": 7.837009356799999,
+        "caveat": "Input token estimates and prices are user assumptions, not a billing guarantee"
+      }
+    }
+  ],
+  "primary": "Complete-protocol parsed-answer categorical MMD",
+  "prespecified_supplement": "choice-or-failure-status-mmd-v1",
+  "correction": "Single Holm family across 98 planned tests: 49 answer-only and 49 API-outcome comparisons across both models; invalid tests enter as p=1.",
+  "alpha": 0.05,
+  "permutations": 99999,
+  "bootstrap": 2000,
+  "pilot_exclusion": "V4 Flash 0731 Parasail omitted before evaluation after 6/28 pilot requests returned HTTP 429. No exclusion by accuracy or pairwise significance.",
+  "no_retries": true,
+  "provider_fallbacks": false,
+  "pilot_in_evaluation": false
+}

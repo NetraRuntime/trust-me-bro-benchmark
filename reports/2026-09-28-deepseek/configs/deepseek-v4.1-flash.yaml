@@ -1,0 +1,181 @@
+claimed_model: deepseek/deepseek-v4.1-flash
+endpoints:
+- role: candidate
+  name: dekallm
+  base_url: https://openrouter.ai/api/v1
+  model: deepseek/deepseek-v4.1-flash
+  api_key_env: OPENROUTER_API_KEY
+  adapter: openai
+  mock_behavior: a
+  unsupported_controls: []
+  provider: dekallm
+  reasoning_effort: null
+  reasoning_enabled: false
+  tokenizer: unknown
+  chat_template: unknown
+  checkpoint_revision: unknown
+  quantization: unknown
+  serving_software: unknown
+  prices:
+    input_per_million: 0.12
+    output_per_million: 0.39999999999999997
+- role: candidate
+  name: deepinfra
+  base_url: https://openrouter.ai/api/v1
+  model: deepseek/deepseek-v4.1-flash
+  api_key_env: OPENROUTER_API_KEY
+  adapter: openai
+  mock_behavior: a
+  unsupported_controls: []
+  provider: deepinfra/fp8
+  reasoning_effort: null
+  reasoning_enabled: false
+  tokenizer: unknown
+  chat_template: unknown
+  checkpoint_revision: unknown
+  quantization: unknown
+  serving_software: unknown
+  prices:
+    input_per_million: 0.14
+    output_per_million: 0.42
+- role: candidate
+  name: novita
+  base_url: https://openrouter.ai/api/v1
+  model: deepseek/deepseek-v4.1-flash
+  api_key_env: OPENROUTER_API_KEY
+  adapter: openai
+  mock_behavior: a
+  unsupported_controls: []
+  provider: novita/fp8
+  reasoning_effort: null
+  reasoning_enabled: false
+  tokenizer: unknown
+  chat_template: unknown
+  checkpoint_revision: unknown
+  quantization: unknown
+  serving_software: unknown
+  prices:
+    input_per_million: 0.195
+    output_per_million: 0.78
+- role: candidate
+  name: fireworks
+  base_url: https://openrouter.ai/api/v1
+  model: deepseek/deepseek-v4.1-flash
+  api_key_env: OPENROUTER_API_KEY
+  adapter: openai
+  mock_behavior: a
+  unsupported_controls: []
+  provider: fireworks
+  reasoning_effort: null
+  reasoning_enabled: false
+  tokenizer: unknown
+  chat_template: unknown
+  checkpoint_revision: unknown
+  quantization: unknown
+  serving_software: unknown
+  prices:
+    input_per_million: 0.22
+    output_per_million: 0.66
+- role: candidate
+  name: together
+  base_url: https://openrouter.ai/api/v1
+  model: deepseek/deepseek-v4.1-flash
+  api_key_env: OPENROUTER_API_KEY
+  adapter: openai
+  mock_behavior: a
+  unsupported_controls: []
+  provider: together
+  reasoning_effort: null
+  reasoning_enabled: false
+  tokenizer: unknown
+  chat_template: unknown
+  checkpoint_revision: unknown
+  quantization: unknown
+  serving_software: unknown
+  prices:
+    input_per_million: 0.3
+    output_per_million: 1.2
+- role: candidate
+  name: parasail
+  base_url: https://openrouter.ai/api/v1
+  model: deepseek/deepseek-v4.1-flash
+  api_key_env: OPENROUTER_API_KEY
+  adapter: openai
+  mock_behavior: a
+  unsupported_controls: []
+  provider: parasail/fp8
+  reasoning_effort: null
+  reasoning_enabled: false
+  tokenizer: unknown
+  chat_template: unknown
+  checkpoint_revision: unknown
+  quantization: unknown
+  serving_software: unknown
+  prices:
+    input_per_million: 0.3
+    output_per_million: 1.2
+- role: candidate
+  name: netra
+  base_url: https://api.netraruntime.com/v1
+  model: deepseek/deepseek-v4.1-flash
+  api_key_env: NETRA_API_KEY
+  adapter: openai
+  mock_behavior: a
+  unsupported_controls: []
+  provider: null
+  reasoning_effort: null
+  reasoning_enabled: false
+  tokenizer: unknown
+  chat_template: unknown
+  checkpoint_revision: unknown
+  quantization: unknown
+  serving_software: unknown
+  prices:
+    input_per_million: 0.3
+    output_per_million: 1.2
+- role: candidate
+  name: deepinfra_repeat
+  base_url: https://openrouter.ai/api/v1
+  model: deepseek/deepseek-v4.1-flash
+  api_key_env: OPENROUTER_API_KEY
+  adapter: openai
+  mock_behavior: a
+  unsupported_controls: []
+  provider: deepinfra/fp8
+  reasoning_effort: null
+  reasoning_enabled: false
+  tokenizer: unknown
+  chat_template: unknown
+  checkpoint_revision: unknown
+  quantization: unknown
+  serving_software: unknown
+  prices:
+    input_per_million: 0.14
+    output_per_million: 0.42
+reference: null
+sampling:
+  temperature: 0.6
+  top_p: 1.0
+  request_seed: null
+  random_seed: 20260928
+  repeats:
+    '0': 1
+    '1': 8
+    '2': 2
+    '3': 20
+  max_tokens:
+    '0': 16
+    '1': 16
+    '2': 128
+    '3': 2048
+  permutations: 99999
+  bootstrap: 2000
+  min_samples: 8
+  alpha: 0.05
+limits:
+  max_requests: 8960
+  max_total_tokens: 50000000
+  max_cost_usd: 18.0
+  timeout_seconds: 120.0
+probes_file: null
+consistency: null

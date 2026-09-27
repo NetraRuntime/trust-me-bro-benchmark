@@ -1,0 +1,267 @@
+{
+  "protocol": "mmlu-choice-v1",
+  "dataset": "TIGER-Lab/MMLU-Pro",
+  "revision": "b189ec765aa7ed75c8acfea42df31fdae71f97be",
+  "split": "test",
+  "source_url": "https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro/resolve/b189ec765aa7ed75c8acfea42df31fdae71f97be/data/test-00000-of-00001.parquet",
+  "source_sha256": "0e24a191921c2f453518a537a8b2117bd137e7714d4ef1565e9ba06c1ecb9ad8",
+  "license": "MIT (dataset card)",
+  "selection_seed": 20260928,
+  "per_category": 1,
+  "population_counts": {
+    "biology": 717,
+    "business": 789,
+    "chemistry": 1132,
+    "computer science": 410,
+    "economics": 844,
+    "engineering": 969,
+    "health": 818,
+    "history": 381,
+    "law": 1101,
+    "math": 1351,
+    "other": 924,
+    "philosophy": 499,
+    "physics": 1299,
+    "psychology": 798
+  },
+  "items": [
+    {
+      "id": "3486",
+      "category": "biology",
+      "question": "In a certain species of flies, the male presents the female witha silken balloon before mating. Explain the evolutionary derivationof this behavior.",
+      "options": [
+        "The silken balloon is a territorial marker to ward off competing males.",
+        "The presentation of a silken balloon to the female fly before mating is the result of the evolution of a behavior pattern, which evolved as a way to distract the female and prevent the male from being eaten during mating.",
+        "The silken balloon is used to display the male's fitness by demonstrating his ability to gather resources.",
+        "The silken balloon contains pheromones to increase the female's receptivity to mating.",
+        "The silken balloon is a gift to the female",
+        "The silken balloon is used by the male fly to trap the female",
+        "The silken balloon is a way for the male fly to showcase his weaving skills",
+        "The silken balloon acts as a decoy to confuse predators while the flies mate.",
+        "The silken balloon serves as a physical barrier to protect the male from predators during mating.",
+        "The silken balloon is a mechanism for the male to control the timing of mating by releasing the female when she is most fertile."
+      ],
+      "answer": "B"
+    },
+    {
+      "id": "113",
+      "category": "business",
+      "question": "Dermanand Klein are the sole stockholders of the Leather Products Corporation. It is estimated that Leather Products will have a taxable income of $30,000 this year. The stock is evenly divided between Mr.Dermanand Mr. Klein, so that resulting dividends will also be equally shared. Both Mr. Dermanand Mr. Klein expect to receive from other sources a net taxable income of $12,000. All profit after taxes Leather Products makes this year will be paid out as dividends. Mr.Dermanwants to introduce a new product. Should this venture succeed, the annual income before taxes will increase by $10,000. What will be the increase in stockholders' income after taxes? Use the tables \"Federal Taxes Rates on 1949 Net Incomes of Corporations in the United States\", and \"Federal Tax Rates on 1949 Incomes of Individuals in the United States.\"",
+      "options": [
+        "$1,129.88",
+        "$850",
+        "$1,050",
+        "$2,250",
+        "$2,400",
+        "$1,500",
+        "$2,000",
+        "$900",
+        "$3,000",
+        "$1,200"
+      ],
+      "answer": "A"
+    },
+    {
+      "id": "4460",
+      "category": "chemistry",
+      "question": "The ionization constant for acetic acid is 1.8 × 10^-5 . a) Calculate the concentration of H^+ ions in a 0.10 molar solution of acetic acid. b) Calculate the concentration of H^+ ions in a 0.10 molar solution of acetic acid in which the concentration of acetate ions has been in-creased to 1.0 molar by addition of sodium acetate.",
+      "options": [
+        "1.4 × 10^-3 M; 1.9 × 10^-6 M",
+        "1.5 × 10^-3 M; 2.0 × 10^-6 M",
+        "1.1 × 10^-3 M; 1.6 × 10^-6 M",
+        "1.2 × 10^-3 M; 1.7 × 10^-6 M",
+        "1.7 × 10^-3 M; 2.2 × 10^-6 M",
+        "0.8 × 10^-3 M; 1.3 × 10^-6 M",
+        "1.0 × 10^-3 M; 1.5 × 10^-6 M",
+        "1.3 × 10^-3 M; 1.8 × 10^-6 M",
+        "1.6 × 10^-3 M; 2.1 × 10^-6 M",
+        "0.9 × 10^-3 M; 1.4 × 10^-6 M"
+      ],
+      "answer": "H"
+    },
+    {
+      "id": "10524",
+      "category": "computer science",
+      "question": "Consider the Bayesian network given below. How many independent parameters are needed for this Bayesian Network H -> U <- P <- W?",
+      "options": [
+        "3",
+        "10",
+        "2",
+        "8",
+        "14",
+        "12",
+        "16",
+        "4",
+        "5",
+        "6"
+      ],
+      "answer": "D"
+    },
+    {
+      "id": "7503",
+      "category": "economics",
+      "question": "A negative externality in the market for a good exists when",
+      "options": [
+        "spillover benefits are received by society.",
+        "total welfare is maximized.",
+        "the marginal social benefit equals the marginal social cost.",
+        "the marginal private benefit equals the marginal social cost.",
+        "there are no spillover benefits or costs to society.",
+        "the market overallocates resources to the production of this good.",
+        "total welfare is minimized.",
+        "the market underallocates resources to the production of this good.",
+        "spillover costs are absorbed by the producer."
+      ],
+      "answer": "F"
+    },
+    {
+      "id": "12127",
+      "category": "engineering",
+      "question": "In a dc machine 6 pole wave winding is used. The number of parallel paths are?",
+      "options": [
+        "2",
+        "8",
+        "7",
+        "12",
+        "3",
+        "6",
+        "5",
+        "10",
+        "4",
+        "1"
+      ],
+      "answer": "A"
+    },
+    {
+      "id": "6691",
+      "category": "health",
+      "question": "A 32-year-old man and his 29-year-old wife come to the office for evaluation for infertility. The wife's gynecologist has reported that her anatomic and physiologic evaluation disclosed no abnormalities and that assessment of potential male factors is needed. The husband is 188 cm (6 ft 3 in) tall with fair skin and little facial hair. He has mild gynecomastia and small, firm testicles. No sperm are seen on semen analysis. Which of the following tests is most likely to establish the underlying cause of this couple's infertility?",
+      "options": [
+        "Serum cortisol concentration",
+        "Serum parathyroid hormone concentration",
+        "Prostate-specific antigen test",
+        "Semen fructose concentration",
+        "Thyroid function test",
+        "Serum prolactin concentration",
+        "Serum follicle-stimulating hormone and luteinizing hormone concentrations",
+        "Serum estrogen and testosterone concentrations",
+        "Adrenal function test",
+        "Karyotype from peripheral leukocytes"
+      ],
+      "answer": "J"
+    },
+    {
+      "id": "4786",
+      "category": "history",
+      "question": "Which is true of the origins of Minoan civilization?",
+      "options": [
+        "Minoan civilization was the result of a merger between ancient Greek and Persian cultures.",
+        "Crete was colonized by the Egyptians, who called the island \"Minoa.\"",
+        "Minoan culture was a direct offshoot of the ancient Sumerian civilization.",
+        "The Minoans were a splinter group of the ancient Indus Valley Civilization.",
+        "Early humans crossed a land bridge to Crete around 150,000 B.P. and gradually became Minoans.",
+        "The Minoans were descendants of the ancient Chinese who migrated to Crete.",
+        "Crete was originally populated by the Romans, who then developed into the Minoans.",
+        "Cretan culture was a mix of Egyptian and Mesopotamian elements.",
+        "Crete was populated by Greeks and others, but Minoan culture was a local development.",
+        "Minoan civilization was brought to Crete by the Phoenicians."
+      ],
+      "answer": "I"
+    },
+    {
+      "id": "1020",
+      "category": "law",
+      "question": "An attorney received a document at his office with an attached note from a client for whom he had just finished drafting a will. The note read as follows: \"Do you think this contract of sale for my boat complies with state law? I would have talked to you in person about this, but I'm on my way out of town. I will be back next week.\" The attorney reviewed the document and wrote a one-page letter to the client stating that the document complied with state law. The lawyer included a bill for $500, which was a lawyer included a bill for $500, which was a reasonable fee. The client refused to pay the attorney anything, arguing that she had never agreed to retain the attorney and that she had received nothing of value from the attorney because the sales transaction was never concluded. Assume that there is no applicable statute or rule governing the formation of attorney-client relationships in the jurisdiction. If the attorney sues the client for the $500, will the attorney be likely to prevail?",
+      "options": [
+        "No, because the client did not sign a formal agreement with the attorney.",
+        "No, because the attorney and the client never agreed on the essential terms of a contract.",
+        "No, because the attorney did not confirm the fee before providing the service.",
+        "No, because the client's note did not explicitly ask for a billable service.",
+        "Yes, because the attorney provided a service that is usually billable.",
+        "Yes, because the client was aware that the attorney's services are typically charged.",
+        "Yes, because the attorney took action on the client's note to his detriment.",
+        "No, because even if the parties had an agreement, that agreement was discharged under the doctrine of frustration of purpose.",
+        "Yes, because the client benefited from the attorney's professional advice."
+      ],
+      "answer": "G"
+    },
+    {
+      "id": "7969",
+      "category": "math",
+      "question": "If polygon ABCDE ~ polygon PQRST, AB = BC = 8, AE = CD = 4, ED = 6, QR = QP, and RS = PT = 3, find the perimeter of polygon ABCDE.",
+      "options": [
+        "22",
+        "30",
+        "32",
+        "24",
+        "26",
+        "35",
+        "40",
+        "38",
+        "28",
+        "34"
+      ],
+      "answer": "B"
+    },
+    {
+      "id": "5581",
+      "category": "other",
+      "question": "What led Britain to impose new taxes on their American colonies?",
+      "options": [
+        "To increase the wealth of King George III",
+        "The growing costs of war with France",
+        "Anger at America's growing prosperity",
+        "Pressure from rich merchants"
+      ],
+      "answer": "B"
+    },
+    {
+      "id": "10930",
+      "category": "philosophy",
+      "question": "Appeal to beliefs is another name for which of the following fallacies?",
+      "options": [
+        "ad nauseam",
+        "appeal to tradition",
+        "solid slope",
+        "self evident truths"
+      ],
+      "answer": "D"
+    },
+    {
+      "id": "10129",
+      "category": "physics",
+      "question": "A refrigerator which has a coefficient of performance A refrigerator which has a coefficient of performance one-third that of a Carnot refrigerator is operated between two reservoirs at temperatures of 200°K and 350°K. It absorbs 500 J from the low-temperature reservoir. How much heat is rejected at the high- temperature reservoir?",
+      "options": [
+        "1300 J",
+        "1100 J",
+        "800 J",
+        "900 J",
+        "500 J",
+        "1000 J",
+        "1500 J",
+        "1200 J",
+        "700 J",
+        "650 J"
+      ],
+      "answer": "B"
+    },
+    {
+      "id": "2248",
+      "category": "psychology",
+      "question": "What is autonomicconditioning ?",
+      "options": [
+        "Autonomic conditioning is a method of cognitive behavioral therapy targeting conscious thought patterns.",
+        "Autonomic conditioning involves the voluntary control of the muscles in the body.",
+        "Autonomic conditioning refers to the process of learning new behaviors",
+        "Autonomic conditioning is the practice of enhancing autonomic nervous system function through specific dietary changes.",
+        "Autonomic conditioning is a type of physical training",
+        "Autonomic conditioning refers to the acclimatization of the body to high-altitude environments.",
+        "Autonomic conditioning is related to memory formation",
+        "Autonomic conditioning refers to the operant conditioning of autonomic responses such as heart rate and intestinal contractions."
+      ],
+      "answer": "H"
+    }
+  ],
+  "selection_note": "First 20 per subject for evaluation; 21st reserved for setup pilot; hash-order selection seed 20260928.",
+  "content_hash": "44db271b9d5a85576276af6df5a01387d865a7788ef8a6cbfe02f8a20efde6d0"
+}
