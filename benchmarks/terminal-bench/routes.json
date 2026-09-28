@@ -1,0 +1,136 @@
+{
+  "checked_at_utc": "2026-09-28T08:50:42.896737+00:00",
+  "status": "proposed_roster_catalog_only_no_live_routing_validation",
+  "routes": [
+    {
+      "name": "dekallm",
+      "model": "deepseek/deepseek-v4.1-flash",
+      "base_url": "https://openrouter.ai/api/v1",
+      "api_key_env": "OPENROUTER_API_KEY",
+      "provider": "dekallm",
+      "input_per_million": 0.12,
+      "output_per_million": 0.39999999999999997,
+      "price_source": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash/endpoints"
+    },
+    {
+      "name": "deepinfra",
+      "model": "deepseek/deepseek-v4.1-flash",
+      "base_url": "https://openrouter.ai/api/v1",
+      "api_key_env": "OPENROUTER_API_KEY",
+      "provider": "deepinfra/fp8",
+      "input_per_million": 0.14,
+      "output_per_million": 0.42,
+      "price_source": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash/endpoints"
+    },
+    {
+      "name": "novita",
+      "model": "deepseek/deepseek-v4.1-flash",
+      "base_url": "https://openrouter.ai/api/v1",
+      "api_key_env": "OPENROUTER_API_KEY",
+      "provider": "novita/fp8",
+      "input_per_million": 0.195,
+      "output_per_million": 0.78,
+      "price_source": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash/endpoints"
+    },
+    {
+      "name": "fireworks",
+      "model": "deepseek/deepseek-v4.1-flash",
+      "base_url": "https://openrouter.ai/api/v1",
+      "api_key_env": "OPENROUTER_API_KEY",
+      "provider": "fireworks",
+      "input_per_million": 0.22,
+      "output_per_million": 0.66,
+      "price_source": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash/endpoints"
+    },
+    {
+      "name": "together",
+      "model": "deepseek/deepseek-v4.1-flash",
+      "base_url": "https://openrouter.ai/api/v1",
+      "api_key_env": "OPENROUTER_API_KEY",
+      "provider": "together",
+      "input_per_million": 0.3,
+      "output_per_million": 1.2,
+      "price_source": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash/endpoints"
+    },
+    {
+      "name": "parasail",
+      "model": "deepseek/deepseek-v4.1-flash",
+      "base_url": "https://openrouter.ai/api/v1",
+      "api_key_env": "OPENROUTER_API_KEY",
+      "provider": "parasail/fp8",
+      "input_per_million": 0.3,
+      "output_per_million": 1.2,
+      "price_source": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4.1-flash/endpoints"
+    },
+    {
+      "name": "netra",
+      "model": "deepseek/deepseek-v4.1-flash",
+      "base_url": "https://api.netraruntime.com/v1",
+      "api_key_env": "NETRA_API_KEY",
+      "provider": null,
+      "input_per_million": 0.3,
+      "output_per_million": 1.2,
+      "price_source": "Previous campaign list-price assumption; refresh before paid execution"
+    },
+    {
+      "name": "deepinfra",
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "base_url": "https://openrouter.ai/api/v1",
+      "api_key_env": "OPENROUTER_API_KEY",
+      "provider": "deepinfra/fp8",
+      "input_per_million": 0.06,
+      "output_per_million": 0.18,
+      "price_source": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4-flash-0731/endpoints"
+    },
+    {
+      "name": "novita",
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "base_url": "https://openrouter.ai/api/v1",
+      "api_key_env": "OPENROUTER_API_KEY",
+      "provider": "novita/fp8",
+      "input_per_million": 0.4092,
+      "output_per_million": 1.2275999999999998,
+      "price_source": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4-flash-0731/endpoints"
+    },
+    {
+      "name": "together",
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "base_url": "https://openrouter.ai/api/v1",
+      "api_key_env": "OPENROUTER_API_KEY",
+      "provider": "together",
+      "input_per_million": 0.14,
+      "output_per_million": 0.28,
+      "price_source": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4-flash-0731/endpoints"
+    },
+    {
+      "name": "coreweave",
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "base_url": "https://openrouter.ai/api/v1",
+      "api_key_env": "OPENROUTER_API_KEY",
+      "provider": "coreweave/fp8",
+      "input_per_million": 0.13,
+      "output_per_million": 0.28,
+      "price_source": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4-flash-0731/endpoints"
+    },
+    {
+      "name": "nebius",
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "base_url": "https://openrouter.ai/api/v1",
+      "api_key_env": "OPENROUTER_API_KEY",
+      "provider": "nebius/fp8",
+      "input_per_million": 0.14,
+      "output_per_million": 0.28,
+      "price_source": "https://openrouter.ai/api/v1/models/deepseek/deepseek-v4-flash-0731/endpoints"
+    },
+    {
+      "name": "netra",
+      "model": "deepseek/deepseek-v4-flash-0731",
+      "base_url": "https://api.netraruntime.com/v1",
+      "api_key_env": "NETRA_API_KEY",
+      "provider": null,
+      "input_per_million": 0.19999999999999998,
+      "output_per_million": 0.5,
+      "price_source": "Previous campaign list-price assumption; refresh before paid execution"
+    }
+  ]
+}
