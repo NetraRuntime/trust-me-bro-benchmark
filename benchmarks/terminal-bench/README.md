@@ -7,9 +7,12 @@ It is not a benchmark result or a completed preregistration.
 
 Use a **headless Linux runner** with a supported container backend. Docker
 Desktop is not part of this setup. No remote host, sandbox service or GPU
-capacity has been provisioned. The execution adapter, dependency lock,
-request-level spend guard and live route checks remain to be implemented and
-validated before paid collection.
+capacity has been provisioned. A pinned runtime, durable request-level spend
+guard, loopback proxy and single-pilot adapter are now implemented. See the
+[runtime instructions](runtime/README.md) and [latest catalog snapshot](readiness.json).
+The fake-API checks are not evidence of container or paid-provider operation.
+Linux resource screening, live-route pilots and final preregistration still
+block main collection. The snapshot must be refreshed before any pilot.
 
 ## Study scope
 
@@ -23,8 +26,8 @@ validated before paid collection.
   Exact proposed routes are in [routes.json](routes.json). Catalog availability
   is not proof that a paid request will follow that route.
 - One fixed **Terminus-2** agent through Harbor. The inspected source revision is
-  in [source-inspection.json](source-inspection.json); an installed, tested
-  dependency lock has not yet been produced.
+  in [source-inspection.json](source-inspection.json); the corresponding runtime
+  and transitive dependencies are pinned in [runtime/uv.lock](runtime/uv.lock).
 - Official task instructions and verifier scoring remain unchanged. A subset
   and explicit agent budget make this a **budget-limited Terminal-Bench CPU
   subset**, not an official full-suite leaderboard score.
@@ -42,16 +45,19 @@ The proposed equal episode ceilings are **150,000 cumulative input tokens** and
 **20,000 cumulative output tokens**, including reasoning and billed retries.
 Input means the sum over every API call, including repeatedly transmitted
 history; it is not the context-window limit. Per-call output ceiling: 8,192
-tokens or the remaining episode allowance, whichever is lower. These limits
-are proposals to validate in the pilot, not implemented controls.
+tokens or the remaining episode allowance, whichever is lower. The pilot adapter
+now enforces these proposed limits through durable request reservations; their
+effect on the agent still needs validation in the disjoint pilot.
 
-At the recorded route prices, all 468 episodes reaching both cumulative ceilings
+At the **2026-09-28** recorded route prices, all 468 episodes reaching both cumulative ceilings
 would total **$20.530152** in token charges. Reserve up to **$2** for setup pilots
 and **$7.469848** for earlier campaign spend, unknown failed-call billing, fees
 and contingency. This allocation stays within $30 only if an execution-time
 spend guard verifies current prices and conservatively reserves every request.
-Netra price assumptions require refresh; its listed prices are carried from the
-previous campaign. No cache discount is assumed.
+These are historical planning prices, not current execution quotes. Current
+catalog changes and unavailable routes are recorded separately in
+[readiness.json](readiness.json), without silently changing the proposed roster.
+No cache discount is assumed.
 
 No paid sandbox is included. If the Linux runner incurs fees, include them in the
 same $30 envelope before execution; do not provision it on an assumed free basis.

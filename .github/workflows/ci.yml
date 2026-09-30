@@ -22,3 +22,13 @@ jobs:
       - run: ruff check .
       - run: tmb benchmark --config examples/mock.yaml --level 4 --output results/ci
       - run: tmb report results/ci/run.json
+  terminal-runtime:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install uv==0.11.29
+      - run: uv sync --project benchmarks/terminal-bench/runtime --locked
+      - run: uv run --project benchmarks/terminal-bench/runtime --locked python benchmarks/terminal-bench/runtime/smoke.py

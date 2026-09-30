@@ -1,0 +1,11 @@
+[project]
+name = "tmb-terminal-runtime"
+version = "0.1.0"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+  "harbor @ git+https://github.com/harbor-framework/harbor.git@a38eb549b5f3c33d16ccd5c51734b0defff8399e",
+  "trust-me-bro-benchmark",
+]
+
+[tool.uv.sources]
+trust-me-bro-benchmark = { path = "../../..", editable = true }
