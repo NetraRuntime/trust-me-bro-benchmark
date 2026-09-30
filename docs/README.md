@@ -10,6 +10,7 @@ Start with the [README quick start](../README.md#quick-start), then choose the q
 | Configure routes, controls, budgets and credentials | [Configuration](configuration.md) |
 | Use the benchmark from an assistant | [MCP server](mcp.md) |
 | Choose a broader probe source | [Dataset guide](datasets.md) |
+| Prepare a bounded agentic provider study | [Terminal-Bench CPU subset](../benchmarks/terminal-bench/README.md) |
 | Understand the original levels 0–4 | [Smoke-test methodology](methodology.md) |
 | Understand spoofing and attribution limits | [Threat model](threat-model.md) |
 | Decide what to retain and share | [Privacy](privacy.md) |

@@ -1,0 +1,1375 @@
+{
+  "revision": "452bf305c6daa62fc59061d22133a7cbc7c1572e",
+  "tasks": [
+    {
+      "name": "atrx-vep-crispr",
+      "config_git_blob": "30d326798d02c2157d01bc8f775495cd6eea6fad",
+      "config_sha256": "ed3e00af1de2d133cfd4fc5011115bbcaf15631ca3c040ac8820c1094a2ee17d",
+      "category": "Science",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1800.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 600.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "batched-eval-parity",
+      "config_git_blob": "a6949adcfb03a574d7b9e5d1bea308ddcbfa85c1",
+      "config_sha256": "f9b7572461c0263731973adc9c03caaa8541144bbd32bd0f3f5f1fa24fa64b81",
+      "category": "ML",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 900.0,
+        "environment_mode": "separate",
+        "environment": {
+          "build_timeout_sec": 600.0,
+          "cpus": 1,
+          "memory_mb": 4096,
+          "storage_mb": 10240,
+          "gpus": 0,
+          "allow_internet": false
+        }
+      }
+    },
+    {
+      "name": "biped-contact-dynamics",
+      "config_git_blob": "3f13255d2e6ca06966ef21c97e5f185a3adf569c",
+      "config_sha256": "5a1c6a9ea6a01699b8fcb60bee4f617fc3b430b47c5df5a440b40163fa728008",
+      "category": "Science",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1800.0,
+        "cpus": 4,
+        "memory_mb": 8192,
+        "storage_mb": 20480,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 2640.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "bun-sourcemap-leak",
+      "config_git_blob": "7cf088f15bfff9549ca65374260955a8fe4e3514",
+      "config_sha256": "d33774eabad9d50fab9d4c6872dc3fe5687bfc87da6b8b23d91a1253939825c7",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240
+      },
+      "verifier": {
+        "environment_mode": "separate",
+        "timeout_sec": 600.0
+      }
+    },
+    {
+      "name": "cad-model",
+      "config_git_blob": "cff1ca01609adf8d15d245167b6d1c2b0c3a6630",
+      "config_sha256": "cf84c2efade23c0884b95737e13994173f2c1c28808480fd95deddd66aa0e3ad",
+      "category": "Hardware",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 8192,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 240.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "cargo-flight-dispatch",
+      "config_git_blob": "abbc5e934ec9028852ab73d6a62a831b105cdab4",
+      "config_sha256": "30d8d613c086cb5ab40d11955d78cde5eaa29fc9f36eed8da2e4a555512ff354",
+      "category": "Operations",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1200.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "environment_mode": "separate",
+        "timeout_sec": 600.0
+      }
+    },
+    {
+      "name": "coq-block-bound",
+      "config_git_blob": "d5179468fa80e7b1f9bfe04b9aa84e083ff26b80",
+      "config_sha256": "3d3887dcf8e54a863e3dd47dc15af8a721d31be069622cacde895077399bf8f2",
+      "category": "Science",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1800.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "environment_mode": "separate",
+        "timeout_sec": 1200.0
+      }
+    },
+    {
+      "name": "ctr-optimization",
+      "config_git_blob": "06d94d6e665df8f0f6ef42c4d132d71ad2e4db6c",
+      "config_sha256": "234c8e1eddbab963ff31ada4f1c710993d0ae57759d267d35db16da3bba002f2",
+      "category": "Operations",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 8192,
+        "storage_mb": 10240
+      },
+      "verifier": {
+        "timeout_sec": 180.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "cumulative-layout-shift",
+      "config_git_blob": "a01ce45816972a41476cef3b7677e7024efb0739",
+      "config_sha256": "44495cee1eae9f3409ddd9e209aea7a69d2380b10c94b3ffd66f47c0a3195d9b",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 4,
+        "memory_mb": 8192,
+        "storage_mb": 20480,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 900.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "data-anonymization",
+      "config_git_blob": "8a861d741855b6545899ad18107a4a9da506320a",
+      "config_sha256": "18886a592f71f491661a00016c25598c6393035fdf3b37ddbf89fb0ac6be9e84",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 8192,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 7200.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "distributed-dedup",
+      "config_git_blob": "1f8c3227a481265942d8620e34afc208f924fdf2",
+      "config_sha256": "93a52d72ac1a08e43877cea2d091507d06b70ef2fedf2d382c7a988cf3a10d92",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1800.0,
+        "cpus": 8,
+        "memory_mb": 16384,
+        "storage_mb": 15000,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 1800.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "embedding-drift-monitor",
+      "config_git_blob": "0716d7772ab4d3ea0928ccdf6fe3127890bef78f",
+      "config_sha256": "ac799e963328258b3301d52e5c58f2dfb10cf575850dd997ceef89cce463da3d",
+      "category": "ML",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 300.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "fin-saccr-rwa",
+      "config_git_blob": "0fc28e89c8ecadf63df512be0b7b1af8acd89287",
+      "config_sha256": "8c65d87bfc462bebccd5df55cbc0efb40c9bbd27dfb2ad9359d700640bd8b9e1",
+      "category": "Operations",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 600.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "foodstuff-beta-activity",
+      "config_git_blob": "b607063e5bae5cfb504f33554baf986fa2e10f89",
+      "config_sha256": "91d54d22dde55748957c08022907eb2d1058c73da8c5ab74d04eedfbb96ea07d",
+      "category": "Science",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 120.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "formal-crypto",
+      "config_git_blob": "f64854fc9eb8eac67caf69156062eed654e98b12",
+      "config_sha256": "60c228984b0519420e6b75a9fe772849ec94b77bf67193725b4ebd6064f7b67c",
+      "category": "Security",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1800.0,
+        "cpus": 8,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 5400.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "fp8-rmsnorm-gemm",
+      "config_git_blob": "f39ce19a374b372925c996590cce532bc4f5076b",
+      "config_sha256": "8fe279ee789af693b0790f888895a74a789af7a6e5ae9db85351ba8d5d337be5",
+      "category": "ML",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 18000.0,
+        "cpus": 4,
+        "memory_mb": 16384,
+        "storage_mb": 30720,
+        "gpus": 1,
+        "gpu_types": [
+          "H100"
+        ]
+      },
+      "verifier": {
+        "environment_mode": "separate",
+        "timeout_sec": 18000.0
+      }
+    },
+    {
+      "name": "freecad-impeller",
+      "config_git_blob": "43db8573362175247a61abc286f085dfa6c138df",
+      "config_sha256": "5b329015ca0a23824975280132ddf498bf5f11ce982c3c6e2ea1a3843c8c6575",
+      "category": "Hardware",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1800.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 600.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "freecad-platform-drawing",
+      "config_git_blob": "46fe6378ad554da5010c6f8e2aabbf9ec89ade40",
+      "config_sha256": "7eebb9b936297bb76aff891806f22a09da9cae7e26dba5123773cb22f83c6aa8",
+      "category": "Hardware",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1800.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 600.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "freecad-spring-clip",
+      "config_git_blob": "4fa89d7788a5d56f3d073ce54d46dcdad0a7b012",
+      "config_sha256": "2f9a2c4cf78f161ba9ecb4f1c6c300106fa1298abf567de53473eaadb570359a",
+      "category": "Hardware",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1800.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 600.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "freight-dispatch-shift",
+      "config_git_blob": "edfb79d432833ffe5805af62f2f176f3cf4a3313",
+      "config_sha256": "86135de889075359544ad500df45798ec7814d5c8b8ebd72cfcdd6552d81b40e",
+      "category": "Operations",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1200,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 300,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "glycan-ms2-elucidation",
+      "config_git_blob": "9ab52c763eaba8c35622af38d2c8b93efdcddb63",
+      "config_sha256": "14735188209e03464a5890d81cb398d93cea7bd51a15031ad789168b13ab9db7",
+      "category": "Science",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 300.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "gsea-proteomics",
+      "config_git_blob": "5e3c4e010a27c1fff10ce3a4c9c8f1f48adcc4d7",
+      "config_sha256": "9d89f7da48340337d9eacb983b18f3eba8c1705c8d3f5821e68dbff34e5e004c",
+      "category": "Science",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 900.0,
+        "cpus": 4,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 300.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "heat-pump-warranty",
+      "config_git_blob": "85627996d8e94350d98f02a602f6c82d1115b30e",
+      "config_sha256": "84c0a71315304b17f73549ff324b631046f97d674c64f27e9360c3d0d5a6732f",
+      "category": "Operations",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1200,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 300,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "hof-topology-interpenetration",
+      "config_git_blob": "1831203007bf331b81d83bdec8e6fc0c192aa9ae",
+      "config_sha256": "5085d983ff17576a76f7b167d50f005d0edf6ece1929fffbad827a3e06c83e3e",
+      "category": "Science",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 2400.0,
+        "cpus": 2,
+        "memory_mb": 8192,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 600.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "html-js-filter",
+      "config_git_blob": "99fd4635353e11c30dac9c0347ec29c89d750aed",
+      "config_sha256": "7827b16c102b8d48d09061ce4251b3f1f6ecb4f4e9e4879a3f06b0db095df985",
+      "category": "Security",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 8192,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 1800.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "interleaved-vigenere",
+      "config_git_blob": "1b5c99a11572f1465beacf202118d47809aa5cb0",
+      "config_sha256": "9a496a0d7dca68866e8f0a1c2431652a433b61fdcca9244fb1f1093854356842",
+      "category": "Security",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 900.0,
+        "cpus": 4,
+        "memory_mb": 4096,
+        "storage_mb": 10240
+      },
+      "verifier": {
+        "environment_mode": "separate",
+        "timeout_sec": 900.0
+      }
+    },
+    {
+      "name": "intrastat-meldung",
+      "config_git_blob": "73fd2d4d842e31b353bdaf0f40a5786eebee7d6c",
+      "config_sha256": "8cfff8952ea456af12a740e0e299a97a652ec054f783b1cd25d6e6c628c4b8f5",
+      "category": "Operations",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1200,
+        "cpus": 2,
+        "memory_mb": 8192,
+        "storage_mb": 20480,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 180,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "jax-speedrun-gpu",
+      "config_git_blob": "7a72c80e094296f9e628442919f7f5e4f506f686",
+      "config_sha256": "946570cdc94267f1d2b1a02cd9ec64835cb933287a8e36558bf4a1fbf6e69111",
+      "category": "ML",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 7200.0,
+        "cpus": 16,
+        "memory_mb": 32768,
+        "storage_mb": 1024000,
+        "gpus": 1,
+        "gpu_types": [
+          "H100"
+        ]
+      },
+      "verifier": {
+        "timeout_sec": 7200.0,
+        "environment_mode": "separate",
+        "environment": {
+          "build_timeout_sec": 7200.0,
+          "cpus": 16,
+          "memory_mb": 32768,
+          "storage_mb": 1024000,
+          "gpus": 1,
+          "gpu_types": [
+            "H100"
+          ]
+        }
+      }
+    },
+    {
+      "name": "ks-solver-cpp",
+      "config_git_blob": "ac928a9e61e5118d2d743d06d946e5902d42828a",
+      "config_sha256": "1bb5ed9446377fa7bc0b5705ee88d5c59fee09496680f2e80f7a20d1d51a6790",
+      "category": "Science",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 300.0,
+        "cpus": 4,
+        "memory_mb": 8192,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 180.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "kv-live-surgery",
+      "config_git_blob": "29997bfe66e1f209f7e2e979dfe49caa39a7dd65",
+      "config_sha256": "31a4f7b9116c15967e3d40f07cf9b18a1c2052664690f76c08221a792d0f97e3",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 600.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "lake-temp-glm",
+      "config_git_blob": "bf8261cae0de06816a9c38780c7d09fac5a1a1a2",
+      "config_sha256": "565268868b0aa9e8457315eaa757e6bd2b9e7f062645bfa99c78786ebb48884d",
+      "category": "Science",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1800.0,
+        "cpus": 8,
+        "memory_mb": 8192,
+        "storage_mb": 20480,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 600.0,
+        "environment_mode": "separate",
+        "environment": {
+          "build_timeout_sec": 1800.0,
+          "cpus": 2,
+          "memory_mb": 4096,
+          "storage_mb": 10240,
+          "gpus": 0,
+          "allow_internet": false
+        }
+      }
+    },
+    {
+      "name": "layout-config-recreation",
+      "config_git_blob": "a60572bb95fd2e163cb06e6b41c3de3871e95776",
+      "config_sha256": "98f358766a83e90078719dc3d90e3acf844d2b16c7e2b734b9f3c70fc4b0557c",
+      "category": "Media",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 900.0,
+        "cpus": 2,
+        "memory_mb": 8192,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 180.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "layout-config-recreation2",
+      "config_git_blob": "c4638fc1d13ec61cc411ccc4c9a5ae0049a29080",
+      "config_sha256": "b62395ba267ed679223d71669df6e57cac114f1a85011bab536bc0e8f1850f07",
+      "category": "Media",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 900.0,
+        "cpus": 4,
+        "memory_mb": 8192,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "environment_mode": "separate",
+        "timeout_sec": 180.0,
+        "environment": {
+          "build_timeout_sec": 900.0,
+          "cpus": 2,
+          "memory_mb": 4096,
+          "storage_mb": 10240,
+          "gpus": 0
+        }
+      }
+    },
+    {
+      "name": "legacy-utility-triage",
+      "config_git_blob": "920eb679a8f1019d863b1e3497a3bc7b12e79538",
+      "config_sha256": "e59d4163b2c37f7b556ff315e37ee5c23640d1ef346e9ff1b344b56c907458b8",
+      "category": "Operations",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1200,
+        "cpus": 2,
+        "memory_mb": 8192,
+        "storage_mb": 20480,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 300,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "live-database-cutover",
+      "config_git_blob": "1717d1b8e411570f4cb6d2005e38463822683f6f",
+      "config_sha256": "3d92be60d134825cdc7c0dc70603938c912200f96cb9c4ffb9d8a297192b5941",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1800.0,
+        "cpus": 16,
+        "memory_mb": 16384,
+        "storage_mb": 20480,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 600.0,
+        "environment_mode": "separate",
+        "environment": {
+          "build_timeout_sec": 1800.0,
+          "cpus": 16,
+          "memory_mb": 16384,
+          "storage_mb": 40960,
+          "gpus": 0
+        }
+      }
+    },
+    {
+      "name": "math-eval-grader",
+      "config_git_blob": "300d390dc32516a9f9dac2e435969ca43e76365b",
+      "config_sha256": "27fa4323927fa8ab0d006d0f86223aaf9f0132536760f626289ca9b4daee7f39",
+      "category": "ML",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 3600.0,
+        "cpus": 8,
+        "memory_mb": 16384,
+        "storage_mb": 30720,
+        "gpus": 1,
+        "gpu_types": [
+          "H100"
+        ]
+      },
+      "verifier": {
+        "timeout_sec": 900.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "medical-claims-processing",
+      "config_git_blob": "b69d79b477e74ffb360810f8d8ee43781bcaa2b3",
+      "config_sha256": "4e708cabde1c5bd73be280e558ee286ae69349551e5ce438b56e9b4371a28ff0",
+      "category": "Operations",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1200,
+        "cpus": 2,
+        "memory_mb": 16384,
+        "storage_mb": 20480,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 120,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "mp-checkpoint-consolidation",
+      "config_git_blob": "23fec60688b57a944077886add7dbaa40848ef92",
+      "config_sha256": "45b8bfb754577fef5bfdbafaa4e202c5554bcfddc90f0abc2ceac4a53fc30276",
+      "category": "ML",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 4,
+        "memory_mb": 4096,
+        "storage_mb": 5120,
+        "gpus": 0
+      },
+      "verifier": {
+        "environment_mode": "separate",
+        "timeout_sec": 300.0
+      }
+    },
+    {
+      "name": "music-harmony",
+      "config_git_blob": "c02b9eaaf4b84925ee0bf72b359041a460da45df",
+      "config_sha256": "178e02eb0ed798f6e968668c9745b4bfaa72f91db5e65d99caff1c82806eccee",
+      "category": "Media",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "environment_mode": "separate",
+        "timeout_sec": 60.0
+      }
+    },
+    {
+      "name": "mvcc-lsm-compaction",
+      "config_git_blob": "62fd30170a2b448379b5e18e12a7a13e2ac57a90",
+      "config_sha256": "a183fa449530a316735635cdb40dd60322b8de7dbeaa058ef83f6472ce8d014a",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 900.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "nextjs-performance",
+      "config_git_blob": "dfdf576cdad58eff4d770d0ec464ceebd4b0c3ff",
+      "config_sha256": "a8dae8d4fa6b270fd19e75fd19285ad18af7436f9b493d9358c536bb75f2dcd8",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 900.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 15360,
+        "gpus": 0
+      },
+      "verifier": {
+        "environment_mode": "separate",
+        "timeout_sec": 300.0
+      }
+    },
+    {
+      "name": "ontology-kg-querying",
+      "config_git_blob": "d04b35db6c088e83b75351526600730dddc584eb",
+      "config_sha256": "be1af4fc21bd32f5bdea331b2d8742787c9564f0ff724bb81608a0ebc5eaaa1b",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1200.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 1500.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "payments-pipeline-fix",
+      "config_git_blob": "75e579f909d0544b328ec05b06c13c40c85543a0",
+      "config_sha256": "7434c9d7142d08ccf8ec31a4fddaeef79ab9d47fc24bfa577db16ebf73ec9e65",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 4,
+        "memory_mb": 8192,
+        "storage_mb": 10240
+      },
+      "verifier": {
+        "timeout_sec": 600.0,
+        "environment_mode": "separate",
+        "environment": {
+          "build_timeout_sec": 600.0,
+          "cpus": 6,
+          "memory_mb": 12288,
+          "storage_mb": 10240
+        }
+      }
+    },
+    {
+      "name": "photonic-waveguide-routing",
+      "config_git_blob": "30effc9474322047e155854eea2fa7850329ad5a",
+      "config_sha256": "b9e17fb3072bb5cf02b98acb2980e891b7a51615ac4dce386771a868d6be3f33",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 300.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "pretrain-shard-corruption",
+      "config_git_blob": "b7686411660b07651eb055e2b990f3a0b781f5c3",
+      "config_sha256": "7d11d8b38e603b26b536bae1e077bace502370eec95531f2aa3136c589c7a1f6",
+      "category": "ML",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 900.0,
+        "cpus": 4,
+        "memory_mb": 8192,
+        "storage_mb": 4096,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 600.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "production-planning",
+      "config_git_blob": "d169ceec79b4ad575a02c23dd3ac501f2e152d1e",
+      "config_sha256": "a962b61e413c3b1d17c90699018725a618f3050229e136087792c97cde2243cd",
+      "category": "Operations",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240
+      },
+      "verifier": {
+        "timeout_sec": 120.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "protein-autointerp-disulfide",
+      "config_git_blob": "7a436676853b43a6ac7b7547bef562dd7af7f2b8",
+      "config_sha256": "1b1471456c01ec6b46684b5d0d9cc529f1bff1596cc1bcdf3cf13b8a65717d90",
+      "category": "Science",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 900.0,
+        "cpus": 4,
+        "memory_mb": 8192,
+        "storage_mb": 20480,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 180.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "react-lead-form",
+      "config_git_blob": "49348d384b5c158d4027d4f1c5bdcda906128f88",
+      "config_sha256": "34e881a1984ad63a1ccd26a14752d05314423dca80df97691c01d1a27b4a98fc",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 900.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "retro-console-soc",
+      "config_git_blob": "30e4d175dd2132e797e996d89d8ce31879b833c8",
+      "config_sha256": "73def52f650ac70782ad6e3a817723e48b12a201eaebac75b3b099d58161b22a",
+      "category": "Hardware",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 1200.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "risk-scorer-replay",
+      "config_git_blob": "6149176428062da0dc3d66cde1eca79f8d2abf72",
+      "config_sha256": "8baefd659c792031962dadfc95355a9d3145dc7fe6a33038d5588693c03f2a52",
+      "category": "ML",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 300.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "roy-polymorph-cn",
+      "config_git_blob": "94f7f969d841cb82372b48ee5978cdb310f852d7",
+      "config_sha256": "105883d44d8daced9beebbeff89eadadc6f2ec03069428aa844981683073715a",
+      "category": "Science",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 300.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "rs-archive-clone",
+      "config_git_blob": "751dda21c0ab444cac600a8df5a774a7f7f7cad3",
+      "config_sha256": "69fa8da3adb67acd66547107ed8b616e889882e1eb70f66db2cd3414fb645d32",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 4,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 1200.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "satb-audio-transcription",
+      "config_git_blob": "4dac129bfb30d05cea18d3b3f49cb0371089aa2e",
+      "config_sha256": "cc0a2112c98594a71791233fe9850ffcb13c1f4d51c83c946725ff725f07142e",
+      "category": "Media",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 4,
+        "memory_mb": 8192,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "environment_mode": "separate",
+        "timeout_sec": 300.0
+      }
+    },
+    {
+      "name": "session-window-debug",
+      "config_git_blob": "a0f4cc0491c7b5b2c4d59c39afd557c8648aad28",
+      "config_sha256": "6906eb9b22f63e59346ba720dd7ff46ae7937e9485ffa63ca832ac16c023ad82",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240
+      },
+      "verifier": {
+        "timeout_sec": 300.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "sglang-qwen-burst",
+      "config_git_blob": "21b78358589fbf6def0856bb770398ad37f69dad",
+      "config_sha256": "645519c0aab64109946c740afa17ab539eea03f0333ee1dace62a631fd900279",
+      "category": "ML",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1800.0,
+        "cpus": 2,
+        "memory_mb": 8192,
+        "storage_mb": 18000,
+        "gpus": 0
+      },
+      "verifier": {
+        "environment_mode": "separate",
+        "timeout_sec": 420.0
+      }
+    },
+    {
+      "name": "shadow-relay",
+      "config_git_blob": "cebfb8e95d1180814abae4cfe9b089b756b31dc7",
+      "config_sha256": "d726fe0585e7890ffaad5f5028175e5d116d6613a9b481c294bb92d88ab25498",
+      "category": "Security",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 300.0,
+        "cpus": 8,
+        "memory_mb": 4096,
+        "storage_mb": 10240
+      },
+      "verifier": {
+        "timeout_sec": 300.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "sound-change-cascade",
+      "config_git_blob": "4943352982e21772b4b15fa7cbd3b02796f695e9",
+      "config_sha256": "68676db0911b9ca6613ba601da5a2150fbbb1b48e4f7a1c727b7132e0e6aa8c5",
+      "category": "Science",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "environment_mode": "separate",
+        "timeout_sec": 300.0
+      }
+    },
+    {
+      "name": "takens-embedding-lean",
+      "config_git_blob": "948b469df23344b05d54cfc7b3a26568e175a6e0",
+      "config_sha256": "1a91bb7febcb8e256ec59397f34fad5c5172785ee1542a72cb3e0b1bd17c2e76",
+      "category": "Science",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1800.0,
+        "cpus": 4,
+        "memory_mb": 16384,
+        "storage_mb": 51200,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 1800.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "telecom-entity-resolution",
+      "config_git_blob": "c059d4cd35217c378808d8a690b2ad5acff084ee",
+      "config_sha256": "e17352a4924288cd698438762ffcc869576159228958a87ec69beeaefe1aed67",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 8192,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 1500.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "uefi-bootkit",
+      "config_git_blob": "57aa7fca4eccd86a0b3c093a8410a668aed2f7de",
+      "config_sha256": "a188dd807c9157b150b8f1a12a3ae4944f591db3df8a77150438c2601ac66537",
+      "category": "Security",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 900.0,
+        "cpus": 2,
+        "memory_mb": 16384,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 700.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "vba-userform-port",
+      "config_git_blob": "f1048d53e782051aa5beb1d38367cb3198d0abb9",
+      "config_sha256": "c0e6af253d72850095286ae63b380a0f70afed9135c3675019e92c340beb2198",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1200,
+        "cpus": 2,
+        "memory_mb": 8192,
+        "storage_mb": 20480,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 900,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "vf2-speedup-networkx",
+      "config_git_blob": "a8ed7bb460e40f70d780a4e4be028861d75aa1ae",
+      "config_sha256": "56beb527be8643b3562500999113fff01e07513654b5f1efc3a49e3c71a39dd0",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 8192,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 900.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "vllm-deepseek-streaming",
+      "config_git_blob": "f721c06f8e5ef2322f4c6823e781957095afac19",
+      "config_sha256": "34410d4b263105ad2eecb525af66935c1c996b9df2a2f69e125585ccbc2b16dd",
+      "category": "ML",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 600.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 300.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "vpp-loss-divergence",
+      "config_git_blob": "386a7ebed98f750e14e72f4df9f3ecab6051a310",
+      "config_sha256": "51616337079bac4102362f37fb9d0231341e0ddcdc0db07f63b877cb22e09b73",
+      "category": "ML",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1200.0,
+        "cpus": 2,
+        "memory_mb": 8192,
+        "storage_mb": 15360,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 900.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "wal-recovery-ordering",
+      "config_git_blob": "5b1d26bd416a550253656173d77538e369f9d674",
+      "config_sha256": "147d7d1f314a9a0240335984d8ecb025baed41cb4e80f352e82dfba37b174fe0",
+      "category": "Software",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 900.0,
+        "cpus": 2,
+        "memory_mb": 4096,
+        "storage_mb": 10240
+      },
+      "verifier": {
+        "timeout_sec": 1800.0,
+        "environment_mode": "separate"
+      }
+    },
+    {
+      "name": "wdm-design",
+      "config_git_blob": "97694f6ec692307e9540133ee183d54deb0bfe24",
+      "config_sha256": "9df2a2015331e4e619b93eaef69b6ee968143c4641e0e5682cbdef43f5d48f90",
+      "category": "Science",
+      "agent": {
+        "timeout_sec": 28800.0
+      },
+      "environment": {
+        "build_timeout_sec": 1800.0,
+        "cpus": 8,
+        "memory_mb": 16384,
+        "storage_mb": 10240,
+        "gpus": 0
+      },
+      "verifier": {
+        "timeout_sec": 1200.0,
+        "environment_mode": "separate"
+      }
+    }
+  ],
+  "source": "https://github.com/harbor-framework/terminal-bench/tree/452bf305c6daa62fc59061d22133a7cbc7c1572e",
+  "version": "4.0.0",
+  "metadata_verification": "All 66 task.toml contents matched Git tree blob hashes; no task execution."
+}

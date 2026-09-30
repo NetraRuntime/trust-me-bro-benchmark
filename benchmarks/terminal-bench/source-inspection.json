@@ -1,0 +1,11 @@
+{
+  "terminal_bench_commit": "452bf305c6daa62fc59061d22133a7cbc7c1572e",
+  "harbor_inspected_commit": "a38eb549b5f3c33d16ccd5c51734b0defff8399e",
+  "status": "pinned_runtime_installed_fake_api_validated_no_paid_or_container_trials",
+  "harbor_source_sha256": {
+    "terminus_2.py": "de15c2c86a66fdc9d7f75f974759835b1174e320fd146f393ef8101c46ba2e6e",
+    "lite_llm.py": "8faa5941aee862bdb9c020874ec721e348165a9b907c5a3509381a2ab50ec5a8"
+  },
+  "runtime_lock": "runtime/uv.lock",
+  "runtime_smoke": "runtime/smoke.py"
+}
